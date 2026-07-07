@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getCurrentCatalystUser, signOutCatalystUser } from "@/lib/catalyst/client";
+import { getCurrentCatalystUser } from "@/lib/catalyst/client";
 import { mapCatalystRole, getStoredDemoRole } from "@/lib/permissions";
 
 export default function HomePage() {
