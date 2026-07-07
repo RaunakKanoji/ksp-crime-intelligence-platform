@@ -47,3 +47,12 @@ To learn more about Next.js, take a look at the following resources:
 
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+## Project Structure Cleanup
+
+This repository has been optimized for production deployment:
+- Legacy pages router directories were removed.
+- Unused components and scripts were deleted.
+- Deployment configuration in `app-config.json` was updated to run the Next.js server on the dynamic AppSail port (`npx next start -p $PORT`).
+- Standard script validations like `npm run type-check` (running `tsc --noEmit`) were added.
+
