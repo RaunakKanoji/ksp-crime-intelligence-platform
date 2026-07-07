@@ -1,0 +1,30 @@
+{
+  "defaults": {
+    "project": 1,
+    "env": 1
+  },
+  "actives": {
+    "project": 1,
+    "env": 1
+  },
+  "projects": [
+    {
+      "idx": 1,
+      "id": "52951000000018006",
+      "name": "ksp-crime-app",
+      "domain": {
+        "id": "50043682168",
+        "name": "ksp-crime-app-60076540751.development"
+      },
+      "timezone": "Asia/Kolkata",
+      "env": [
+        {
+          "idx": 1,
+          "id": "60076540751",
+          "name": "Development",
+          "type": 3
+        }
+      ]
+    }
+  ]
+}

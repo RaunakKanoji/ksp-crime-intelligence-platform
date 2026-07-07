@@ -1,0 +1,15 @@
+node_modules/
+.next/
+.next-appsail/
+.build/
+dist/
+build/
+.turbo/
+.vercel/
+.env
+.env.local
+.env.*.local
+*.log
+catalyst-debug.log
+.DS_Store
+*.tsbuildinfo
