@@ -1,0 +1,21 @@
+{
+  "functions": {
+    "targets": [
+      "ksp_crime_app_function"
+    ],
+    "ignore": [],
+    "source": "functions"
+  },
+  "slate": [
+    {
+      "name": "crime-intelligence",
+      "source": "/Users/admin/Code/ksp/crime-intelligence"
+    }
+  ],
+  "appsail": [
+    {
+      "source": ".",
+      "name": "AppSail"
+    }
+  ]
+}
