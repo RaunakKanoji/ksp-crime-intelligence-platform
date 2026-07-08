@@ -1,12 +1,5 @@
-import { FeaturePlaceholder } from "@/components/layout/FeaturePlaceholder";
+import { PoliceStationAnalytics } from "@/components/police-station-analytics/PoliceStationAnalytics";
 
 export default function AnalyticsPage() {
-  return (
-    <FeaturePlaceholder
-      title="Crime Analytics"
-      description="Aggregated trends, category breakdowns, and comparative crime analytics."
-      requiredPermission="page:dashboard"
-      featureId="015"
-    />
-  );
+  return <PoliceStationAnalytics />;
 }
