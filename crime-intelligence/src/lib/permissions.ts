@@ -1,11 +1,10 @@
-"use client";
-
 export type UserRole = "Admin" | "Investigator" | "Analyst" | "Officer" | "Viewer";
 
 export type Permission =
   | "page:dashboard"
   | "page:fir-search"
   | "page:fir-detail"
+  | "page:fir-advanced-filters"
   | "page:map"
   | "page:people"
   | "page:ai-query"
@@ -30,6 +29,7 @@ export const ROLE_MATRIX: Record<UserRole, RolePermissions> = {
       "page:dashboard",
       "page:fir-search",
       "page:fir-detail",
+      "page:fir-advanced-filters",
       "page:map",
       "page:people",
       "page:ai-query",
@@ -48,6 +48,7 @@ export const ROLE_MATRIX: Record<UserRole, RolePermissions> = {
       "page:dashboard",
       "page:fir-search",
       "page:fir-detail",
+      "page:fir-advanced-filters",
       "page:map",
       "page:people",
       "page:ai-query",
@@ -63,6 +64,7 @@ export const ROLE_MATRIX: Record<UserRole, RolePermissions> = {
     permissions: [
       "page:dashboard",
       "page:fir-search",
+      "page:fir-advanced-filters",
       "page:map",
       "page:people",
       "page:ai-query",
@@ -77,6 +79,7 @@ export const ROLE_MATRIX: Record<UserRole, RolePermissions> = {
       "page:dashboard",
       "page:fir-search",
       "page:fir-detail",
+      "page:fir-advanced-filters",
       "page:map",
     ],
   },
@@ -86,6 +89,7 @@ export const ROLE_MATRIX: Record<UserRole, RolePermissions> = {
     permissions: [
       "page:dashboard",
       "page:fir-search",
+      "page:fir-advanced-filters",
     ],
   },
 };
