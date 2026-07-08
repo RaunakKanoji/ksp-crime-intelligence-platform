@@ -138,11 +138,13 @@ function ProgressBar({
   tone = "teal",
   label,
   rightLabel,
+  dark = false,
 }: {
   value: number;
   tone?: "teal" | "amber" | "slate" | "red" | "green";
   label?: string;
   rightLabel?: string;
+  dark?: boolean;
 }) {
   const color =
     tone === "amber"
@@ -163,7 +165,7 @@ function ProgressBar({
           {rightLabel && <span className="text-slate-500">{rightLabel}</span>}
         </div>
       )}
-      <div className="h-2 overflow-hidden rounded-full bg-slate-100">
+      <div className={`h-2 overflow-hidden rounded-full ${dark ? "bg-slate-800" : "bg-slate-100"}`}>
         <div
           className={`h-full rounded-full transition-all duration-500 ${color}`}
           style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
@@ -369,7 +371,7 @@ function DistrictCrimeComparisonContent({ data }: { data: DistrictComparisonData
         {/* Selected District Details Side panel */}
         {selectedDistrict && (
           <section className="space-y-4">
-            <div className={`${cardClass} bg-slate-900 text-white border-none shadow-md`}>
+            <div className="rounded-lg bg-slate-900 p-5 text-white shadow-md">
               <div className="border-b border-slate-800 pb-4">
                 <span className="text-[10px] font-bold uppercase tracking-widest text-teal-400">
                   Detailed profile
@@ -409,7 +411,7 @@ function DistrictCrimeComparisonContent({ data }: { data: DistrictComparisonData
                     <span>Solved rate</span>
                     <span>{selectedDistrict.solvedRate}%</span>
                   </div>
-                  <ProgressBar value={selectedDistrict.solvedRate} tone="green" />
+                  <ProgressBar value={selectedDistrict.solvedRate} tone="green" dark />
                 </div>
 
                 <div>
@@ -417,7 +419,7 @@ function DistrictCrimeComparisonContent({ data }: { data: DistrictComparisonData
                     <span>Average incident risk</span>
                     <span>{selectedDistrict.averageRiskScore} / 10</span>
                   </div>
-                  <ProgressBar value={selectedDistrict.averageRiskScore * 10} tone="amber" />
+                  <ProgressBar value={selectedDistrict.averageRiskScore * 10} tone="amber" dark />
                 </div>
               </div>
             </div>
