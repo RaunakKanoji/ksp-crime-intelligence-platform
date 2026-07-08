@@ -121,50 +121,32 @@ export const NAV_GROUPS: NavGroup[] = [
     label: "FIR Records",
     items: [
       { label: "FIR Search", href: "/fir-search", permission: "page:fir-search", icon: icons.file },
-      { label: "Accused & Victims", href: "/people", permission: "page:people", icon: icons.people },
+      { label: "Advanced Filters", href: "/fir-advanced-filters", permission: "page:fir-advanced-filters", icon: icons.file },
     ],
   },
   {
     label: "Analytics",
     items: [
-      { label: "Crime Analytics", href: "/analytics", permission: "page:dashboard", icon: icons.chart },
+      { label: "Police Station Analytics", href: "/analytics", permission: "page:dashboard", icon: icons.chart },
     ],
   },
   {
     label: "Maps & Hotspots",
     items: [
-      { label: "Crime Map", href: "/map", permission: "page:map", icon: icons.map },
+      { label: "Crime Map", href: "/crime-map", permission: "page:map", icon: icons.map },
     ],
   },
   {
     label: "AI Query",
     items: [
-      { label: "AI Assistant", href: "/ai-query", permission: "page:ai-query", icon: icons.ai },
-    ],
-  },
-  {
-    label: "Reports",
-    items: [
-      { label: "Reports", href: "/reports", permission: "feature:export-pdf", icon: icons.report },
-    ],
-  },
-  {
-    label: "Data Operations",
-    items: [
-      { label: "Dataset Upload", href: "/dataset-upload", permission: "page:dataset-upload", icon: icons.database },
+      { label: "Natural Language Query", href: "/ai-query", permission: "page:ai-query", icon: icons.ai },
+      { label: "Result Explanation", href: "/ai-query/explanation", permission: "page:ai-query", icon: icons.ai },
     ],
   },
   {
     label: "Admin",
     items: [
-      { label: "System Settings", href: "/admin-settings", permission: "page:admin-settings", icon: icons.settings },
       { label: "Role-Based Access", href: "/admin/role-based-access", permission: "page:admin-settings", icon: icons.shield },
-    ],
-  },
-  {
-    label: "Help",
-    items: [
-      { label: "Help & Documentation", href: "/help", icon: icons.help },
     ],
   },
 ];
