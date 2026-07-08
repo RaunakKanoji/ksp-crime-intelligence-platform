@@ -1,12 +1,5 @@
-import { FeaturePlaceholder } from "@/components/layout/FeaturePlaceholder";
+import { redirect } from "next/navigation";
 
 export default function MapPage() {
-  return (
-    <FeaturePlaceholder
-      title="Crime Map"
-      description="Geospatial view of incidents with clustering and hotspot overlays."
-      requiredPermission="page:map"
-      featureId="011"
-    />
-  );
+  redirect("/crime-map");
 }
