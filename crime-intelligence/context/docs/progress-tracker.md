@@ -8,8 +8,8 @@ Allowed statuses: `Not Started`, `In Progress`, `Blocked`, `Done`, `Needs Review
 |---|---|---|---|---|---|---|
 | 001 | Auth Login | Done | High | None | 2026-07-07 | Custom styled login iframe using absolute local CSS path, default CSS fallbacks. |
 | 002 | Role-Based Access | Done | High | 001-auth-login | 2026-07-07 | Custom role mapping and interactive role simulation page at /admin/role-based-access. |
-| 003 | App Shell Layout | Not Started | High | None | 2026-07-04 | Initial documentation/spec created. |
-| 004 | Dashboard Overview | Not Started | High | 003-app-shell-layout | 2026-07-04 | Initial documentation/spec created. |
+| 003 | App Shell Layout | Done | High | None | 2026-07-08 | Implemented shared AppShell (permission-aware grouped sidebar, header, user menu, breadcrumb, page container) with loading/error/permission-denied/empty states using the default Tailwind component system; added plain route pages for future feature modules. |
+| 004 | Dashboard Overview | Done | High | 003-app-shell-layout | 2026-07-08 | Dashboard Overview at the Dashboard route inside AppShell: summary cards (incl. pending indicators), FIR trend, hotspot map preview, recent alerts, top categories, and district overview. Typed data service returns clearly-labeled sample data with role-based redaction; date/district/category filters; loading/success/empty/error/permission-denied states. |
 | 005 | Crime Summary Cards | Not Started | High | 004-dashboard-overview | 2026-07-04 | Initial documentation/spec created. |
 | 006 | Natural Language Query | Not Started | High | 001-auth-login, 002-auth-role-based-access, 008-fir-search, 035-audit-logs | 2026-07-04 | Initial documentation/spec created. |
 | 007 | AI Query Result Explanation | Not Started | High | 006-natural-language-query | 2026-07-04 | Initial documentation/spec created. |

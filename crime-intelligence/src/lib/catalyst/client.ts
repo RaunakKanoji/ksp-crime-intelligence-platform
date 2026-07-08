@@ -29,6 +29,39 @@ declare global {
 
 let catalystReadyPromise: Promise<CatalystAuth> | null = null;
 
+/**
+ * Local demo session. Zoho IAM session cookies are bound to the Catalyst /
+ * accounts domains, so real authentication can only succeed when the app is
+ * served from the Catalyst domain itself. On localhost (e.g. `catalyst serve`)
+ * the browser never sends those cookies, so we fall back to a clearly-labeled
+ * demo session to keep the app usable during local development. Real auth stays
+ * enforced on any non-local host.
+ */
+export const DEMO_USER = {
+  email_id: "demo.officer@ksp.local",
+  first_name: "Demo",
+  last_name: "Officer",
+  user_id: "local-demo-user",
+  status: "ACTIVE",
+  role_details: { role_name: "Admin" },
+} as const;
+
+export function isLocalHost(): boolean {
+  if (typeof window === "undefined") return false;
+  const host = window.location.hostname;
+  return (
+    host === "localhost" ||
+    host === "127.0.0.1" ||
+    host === "0.0.0.0" ||
+    host === "[::1]" ||
+    host.endsWith(".local")
+  );
+}
+
+export function isDemoUser(user: { user_id?: string } | null | undefined): boolean {
+  return user?.user_id === DEMO_USER.user_id;
+}
+
 export function loadScript(src: string) {
   return new Promise<void>((resolve, reject) => {
     const existing = document.querySelector(
@@ -90,9 +123,23 @@ export function getSafeRedirectPath(fallback = "/") {
 }
 
 export async function getCurrentCatalystUser() {
-  const auth = await getCatalystAuth();
-  const response = await auth.isUserAuthenticated();
-  return response.content ?? response.data ?? null;
+  try {
+    const auth = await getCatalystAuth();
+    const response = await auth.isUserAuthenticated();
+    const user = response.content ?? response.data ?? null;
+    if (user) return user;
+    // Authenticated check returned no session.
+    if (isLocalHost()) return { ...DEMO_USER };
+    return null;
+  } catch (error) {
+    // The Catalyst SDK/session is unavailable. On localhost this is expected
+    // (cross-origin session cookies), so fall back to the demo session.
+    if (isLocalHost()) {
+      console.warn("Catalyst auth unavailable — using local demo session.", error);
+      return { ...DEMO_USER };
+    }
+    throw error;
+  }
 }
 
 export async function mountCatalystSignIn(elementId: string) {

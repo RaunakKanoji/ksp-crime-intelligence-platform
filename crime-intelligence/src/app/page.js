@@ -1,3 +1,3 @@
-import HomePage from "@/components/HomePage";
+import DashboardOverview from "@/components/dashboard/DashboardOverview";
 
-export default HomePage;
+export default DashboardOverview;
