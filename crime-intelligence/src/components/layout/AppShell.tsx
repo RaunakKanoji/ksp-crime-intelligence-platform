@@ -208,7 +208,10 @@ export function AppShell({
             const active =
               item.href === "/"
                 ? pathname === "/"
-                : pathname === item.href || pathname.startsWith(`${item.href}/`);
+                : pathname === item.href ||
+                  (item.href !== "/analytics" &&
+                    item.href !== "/ai-query" &&
+                    pathname.startsWith(`${item.href}/`));
             return (
               <Link
                 key={item.href}

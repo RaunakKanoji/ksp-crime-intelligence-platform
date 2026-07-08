@@ -11,6 +11,7 @@ export type Permission =
   | "page:dataset-upload"
   | "page:admin-settings"
   | "page:district-comparison"
+  | "page:time-series-trends"
   | "feature:export-pdf"
   | "feature:export-csv"
   | "data:view-pii"
@@ -37,6 +38,7 @@ export const ROLE_MATRIX: Record<UserRole, RolePermissions> = {
       "page:dataset-upload",
       "page:admin-settings",
       "page:district-comparison",
+      "page:time-series-trends",
       "feature:export-pdf",
       "feature:export-csv",
       "data:view-pii",
@@ -55,6 +57,7 @@ export const ROLE_MATRIX: Record<UserRole, RolePermissions> = {
       "page:people",
       "page:ai-query",
       "page:district-comparison",
+      "page:time-series-trends",
       "feature:export-pdf",
       "feature:export-csv",
       "data:view-pii",
@@ -72,6 +75,7 @@ export const ROLE_MATRIX: Record<UserRole, RolePermissions> = {
       "page:people",
       "page:ai-query",
       "page:district-comparison",
+      "page:time-series-trends",
       "feature:export-pdf",
       "feature:export-csv",
     ],
