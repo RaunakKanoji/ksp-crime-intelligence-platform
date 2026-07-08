@@ -31,8 +31,6 @@ type Category = (typeof CATEGORIES)[number];
 
 // Baseline incident counts for a 30-day window. Zeros are intentional so that
 // some district/category combinations produce a legitimate empty state.
-// Exported so the Crime Summary Cards feature (005) can reuse the same sample
-// source and stay consistent with the Dashboard Overview.
 export const MATRIX: Record<District, Record<Category, number>> = {
   "Bengaluru City": { Theft: 120, Property: 78, Cybercrime: 90, Assault: 40, Traffic: 55, "Women Safety": 22, Narcotics: 15 },
   Mysuru: { Theft: 52, Property: 34, Cybercrime: 20, Assault: 24, Traffic: 26, "Women Safety": 14, Narcotics: 10 },
