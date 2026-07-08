@@ -141,7 +141,7 @@ export function SummaryCards({ metrics }: { metrics: SummaryMetric[] }) {
 export function TrendPreview({ points }: { points: TrendPoint[] }) {
   const max = Math.max(1, ...points.map((p) => p.value));
   return (
-    <section className={card}>
+    <section className={`${card} flex h-full flex-col`}>
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-semibold tracking-tight">FIR Trend</h2>
@@ -151,24 +151,26 @@ export function TrendPreview({ points }: { points: TrendPoint[] }) {
           View analytics
         </Link>
       </div>
-      <div className="mt-6">
-        <div className="flex h-40 items-end gap-3" role="img" aria-label="Bar chart of FIRs by month">
-          {points.map((p) => (
-            <div
-              key={p.label}
-              className="flex-1 rounded-t bg-teal-600/80"
-              style={{ height: `${Math.max(2, (p.value / max) * 100)}%` }}
-              title={`${p.label}: ${p.value.toLocaleString("en-IN")}`}
-            />
-          ))}
-        </div>
-        <div className="mt-2 flex gap-3">
-          {points.map((p) => (
-            <span key={p.label} className="flex-1 text-center text-xs text-slate-500">
-              {p.label}
-            </span>
-          ))}
-        </div>
+      <div
+        className="mt-6 flex min-h-[10rem] flex-1 items-end gap-3"
+        role="img"
+        aria-label="Bar chart of FIRs by month"
+      >
+        {points.map((p) => (
+          <div
+            key={p.label}
+            className="flex-1 rounded-t bg-teal-600/80"
+            style={{ height: `${Math.max(2, (p.value / max) * 100)}%` }}
+            title={`${p.label}: ${p.value.toLocaleString("en-IN")}`}
+          />
+        ))}
+      </div>
+      <div className="mt-2 flex gap-3">
+        {points.map((p) => (
+          <span key={p.label} className="flex-1 text-center text-xs text-slate-500">
+            {p.label}
+          </span>
+        ))}
       </div>
     </section>
   );
