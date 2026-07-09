@@ -94,7 +94,16 @@ function PartyTable({ title, rows }: { title: string; rows: FirDetailParty[] }) 
               rows.map((row) => (
                 <tr key={row.id} className="border-b border-slate-100 align-top last:border-0">
                   <td className="px-6 py-3 font-medium text-slate-900">
-                    <RedactedValue value={row.name} />
+                    {title === "Accused Information" && row.name ? (
+                      <Link
+                        href={`/people?id=${row.id}`}
+                        className="text-teal-700 hover:underline hover:text-teal-800"
+                      >
+                        <RedactedValue value={row.name} />
+                      </Link>
+                    ) : (
+                      <RedactedValue value={row.name} />
+                    )}
                   </td>
                   <td className="px-6 py-3 text-slate-700">{row.role}</td>
                   <td className="px-6 py-3 text-slate-700">
