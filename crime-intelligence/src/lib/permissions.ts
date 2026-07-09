@@ -12,6 +12,7 @@ export type Permission =
   | "page:admin-settings"
   | "page:district-comparison"
   | "page:time-series-trends"
+  | "page:crime-category-breakdown"
   | "feature:export-pdf"
   | "feature:export-csv"
   | "data:view-pii"
@@ -39,6 +40,7 @@ export const ROLE_MATRIX: Record<UserRole, RolePermissions> = {
       "page:admin-settings",
       "page:district-comparison",
       "page:time-series-trends",
+      "page:crime-category-breakdown",
       "feature:export-pdf",
       "feature:export-csv",
       "data:view-pii",
@@ -58,6 +60,7 @@ export const ROLE_MATRIX: Record<UserRole, RolePermissions> = {
       "page:ai-query",
       "page:district-comparison",
       "page:time-series-trends",
+      "page:crime-category-breakdown",
       "feature:export-pdf",
       "feature:export-csv",
       "data:view-pii",
@@ -76,6 +79,7 @@ export const ROLE_MATRIX: Record<UserRole, RolePermissions> = {
       "page:ai-query",
       "page:district-comparison",
       "page:time-series-trends",
+      "page:crime-category-breakdown",
       "feature:export-pdf",
       "feature:export-csv",
     ],
