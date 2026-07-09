@@ -150,4 +150,6 @@ Current crime analysis workflows can be fragmented, manual, and dependent on spr
 - Update `docs/progress-tracker.md` after meaningful changes.
 
 ## 20. Status
-Initial status: Not Started.
+Status: Done (2026-07-09).
+
+Implemented at `/victims`, with profile selection through a validated `id` query parameter. Raw sample records remain server-side behind `/api/people/victim-profile`; responses are permission-filtered before reaching the UI. Audit persistence remains pending feature 035 and is explicitly disclosed in the profile view.

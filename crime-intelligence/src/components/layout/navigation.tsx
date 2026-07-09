@@ -137,6 +137,7 @@ export const NAV_GROUPS: NavGroup[] = [
     label: "People Intelligence",
     items: [
       { label: "Accused Person Profile", href: "/people", permission: "page:accused-profile", icon: icons.people },
+      { label: "Victim Profile Summary", href: "/victims", permission: "page:victim-profile", icon: icons.people },
     ],
   },
   {
