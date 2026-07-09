@@ -151,4 +151,6 @@ Current crime analysis workflows can be fragmented, manual, and dependent on spr
 - Update `docs/progress-tracker.md` after meaningful changes.
 
 ## 20. Status
-Initial status: Not Started.
+Status: Done (2026-07-09).
+
+Implemented at `/people`, with profile selection through a validated `id` query parameter. The current data layer uses clearly labeled sample records and applies role-based field filtering before returning data to the UI. Audit persistence remains pending feature 035 and is explicitly disclosed in the profile view.
