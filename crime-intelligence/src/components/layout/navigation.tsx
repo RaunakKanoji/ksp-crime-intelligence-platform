@@ -130,6 +130,7 @@ export const NAV_GROUPS: NavGroup[] = [
       { label: "Police Station Analytics", href: "/analytics", permission: "page:dashboard", icon: icons.chart },
       { label: "District Crime Comparison", href: "/analytics/district", permission: "page:district-comparison", icon: icons.chart },
       { label: "Time-Series Crime Trends", href: "/analytics/trends", permission: "page:time-series-trends", icon: icons.chart },
+      { label: "Crime Category Breakdown", href: "/analytics/breakdown", permission: "page:crime-category-breakdown", icon: icons.chart },
     ],
   },
   {
