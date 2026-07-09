@@ -13,6 +13,7 @@ export type Permission =
   | "page:district-comparison"
   | "page:time-series-trends"
   | "page:crime-category-breakdown"
+  | "page:accused-profile"
   | "feature:export-pdf"
   | "feature:export-csv"
   | "data:view-pii"
@@ -41,6 +42,7 @@ export const ROLE_MATRIX: Record<UserRole, RolePermissions> = {
       "page:district-comparison",
       "page:time-series-trends",
       "page:crime-category-breakdown",
+      "page:accused-profile",
       "feature:export-pdf",
       "feature:export-csv",
       "data:view-pii",
@@ -61,6 +63,7 @@ export const ROLE_MATRIX: Record<UserRole, RolePermissions> = {
       "page:district-comparison",
       "page:time-series-trends",
       "page:crime-category-breakdown",
+      "page:accused-profile",
       "feature:export-pdf",
       "feature:export-csv",
       "data:view-pii",
@@ -80,6 +83,7 @@ export const ROLE_MATRIX: Record<UserRole, RolePermissions> = {
       "page:district-comparison",
       "page:time-series-trends",
       "page:crime-category-breakdown",
+      "page:accused-profile",
       "feature:export-pdf",
       "feature:export-csv",
     ],
