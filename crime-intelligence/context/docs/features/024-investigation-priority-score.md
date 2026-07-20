@@ -159,4 +159,13 @@ Current crime analysis workflows can be fragmented, manual, and dependent on spr
 - Keep algorithm/AI logic explainable and separately testable.
 
 ## 20. Status
-Initial status: Not Started.
+Status: Done (2026-07-09).
+
+Implemented at `/cases/priority-score` with an authenticated, role-gated API and
+separately testable fixed-weight scoring service. The 100-point formula uses
+severity (30), repeat-offender link (20), victim risk (20), location risk (15),
+case age (10), and public-safety impact (5). Each response includes factor points,
+controlled input level, source fields, limitations, confidence, and mandatory
+human review. Protected victim identities and demographics are not scoring
+inputs. Until Catalyst source tables are active, the page uses clearly labeled
+sample classifications. Audit persistence remains pending feature 035.
