@@ -158,4 +158,11 @@ Current crime analysis workflows can be fragmented, manual, and dependent on spr
 - Keep algorithm/AI logic explainable and separately testable.
 
 ## 20. Status
-Initial status: Not Started.
+Status: Done (2026-07-09).
+
+Implemented at `/intelligence/modus-operandi` with an authenticated, role-gated
+API and typed analysis service. The current sample-data implementation uses
+deterministic controlled-attribute extraction and set-overlap similarity because
+an external AI provider is not needed for the available structured demo workflow.
+Every pattern identifies source fields, confidence, limitations, linked FIRs, and
+the manual-verification requirement. Audit persistence remains pending feature 035.
