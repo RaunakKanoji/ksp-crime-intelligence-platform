@@ -1,0 +1,6 @@
+{
+  "table_identifier": "user_role_assignments",
+  "operation": "upsert",
+  "find_by": "assignment_key"
+}
+

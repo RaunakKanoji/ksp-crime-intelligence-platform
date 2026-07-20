@@ -1,6 +1,26 @@
 'use strict';
 
 const { URL } = require("url");
+const catalyst = require("zcatalyst-sdk-node");
+
+const FIR_TABLE = "FIRs";
+const FIR_ALLOWED_FIELDS = [
+  "fir_number",
+  "crime_type",
+  "district",
+  "fir_date",
+  "accused",
+  "victim",
+  "description",
+  "police_station",
+  "reported_date",
+  "crime_category",
+  "act",
+  "section",
+  "case_status",
+  "sensitive_note",
+];
+const FIR_REQUIRED_FIELDS = ["fir_number", "crime_type", "district", "fir_date", "description"];
 
 const rolesWithMapAccess = new Set(["Admin", "Investigator", "Analyst", "Officer"]);
 const rolesWithIntel = new Set(["Admin", "Investigator"]);
@@ -33,6 +53,176 @@ const boundaries = [
 function send(res, status, body) {
   res.writeHead(status, { "Content-Type": "application/json" });
   res.end(JSON.stringify(body));
+}
+
+function getRoutePath(url) {
+  return url.pathname.replace(/^\/server\/ksp_crime_app_function(?=\/|$)/, "") || "/";
+}
+
+function getFirTable(req) {
+  const catalystApp = catalyst.initialize(req);
+  return catalystApp.datastore().table(FIR_TABLE);
+}
+
+function mapFirRow(row) {
+  return {
+    id: String(row.ROWID),
+    firNumber: row.fir_number ?? "",
+    crimeType: row.crime_type ?? "",
+    district: row.district ?? "",
+    firDate: row.fir_date ?? "",
+    accused: row.accused ?? "",
+    victim: row.victim ?? "",
+    description: row.description ?? "",
+    createdAt: row.CREATEDTIME ?? null,
+    updatedAt: row.MODIFIEDTIME ?? null,
+    policeStation: row.police_station ?? "",
+    reportedDate: row.reported_date ?? row.fir_date ?? "",
+    crimeCategory: row.crime_category ?? row.crime_type ?? "",
+    act: row.act ?? "",
+    section: row.section ?? "",
+    caseStatus: row.case_status ?? "Open",
+    sensitiveNote: row.sensitive_note ?? "",
+  };
+}
+
+function getAllowedFirFields(input) {
+  const source = input && typeof input === "object" ? input : {};
+  return Object.fromEntries(
+    FIR_ALLOWED_FIELDS
+      .filter((field) => source[field] !== undefined)
+      .map((field) => [field, source[field]])
+  );
+}
+
+function readJsonBody(req) {
+  if (req.body && typeof req.body === "object") return Promise.resolve(req.body);
+  if (typeof req.body === "string" && req.body.trim()) {
+    try {
+      return Promise.resolve(JSON.parse(req.body));
+    } catch {
+      return Promise.reject(new Error("Invalid JSON body."));
+    }
+  }
+
+  return new Promise((resolve, reject) => {
+    let body = "";
+    req.on("data", (chunk) => {
+      body += chunk;
+      if (body.length > 1024 * 1024) {
+        reject(new Error("Request body is too large."));
+      }
+    });
+    req.on("end", () => {
+      if (!body.trim()) return resolve({});
+      try {
+        resolve(JSON.parse(body));
+      } catch {
+        reject(new Error("Invalid JSON body."));
+      }
+    });
+    req.on("error", reject);
+  });
+}
+
+async function handleFirRoutes(req, res, url) {
+  const routePath = getRoutePath(url);
+
+  if (routePath === "/api/firs" && req.method === "GET") {
+    try {
+      const requestedLimit = Number(url.searchParams.get("limit") || 25);
+      const maxRows = Math.min(Math.max(requestedLimit, 1), 100);
+      const options = { maxRows };
+      const nextToken = url.searchParams.get("nextToken");
+
+      if (nextToken) {
+        options.nextToken = nextToken;
+      }
+
+      const result = await getFirTable(req).getPagedRows(options);
+
+      return send(res, 200, {
+        data: (result.data || []).map(mapFirRow),
+        nextToken: result.next_token || result.nextToken || null,
+        hasMore: Boolean(result.more_records || result.moreRecords),
+      });
+    } catch (error) {
+      console.error("Failed to list FIRs", error);
+      return send(res, 500, {
+        error: "DATABASE_READ_FAILED",
+        message: "FIR records could not be loaded.",
+      });
+    }
+  }
+
+  const firDetailMatch = routePath.match(/^\/api\/firs\/([^/]+)$/);
+  if (firDetailMatch && req.method === "GET") {
+    try {
+      const row = await getFirTable(req).getRow(firDetailMatch[1]);
+      return send(res, 200, { data: mapFirRow(row) });
+    } catch (error) {
+      console.error("Failed to read FIR", error);
+      return send(res, 404, {
+        error: "FIR_NOT_FOUND",
+        message: "The requested FIR could not be found.",
+      });
+    }
+  }
+
+  if (routePath === "/api/firs" && req.method === "POST") {
+    try {
+      const body = await readJsonBody(req);
+      const rowData = getAllowedFirFields(body);
+      const missingFields = FIR_REQUIRED_FIELDS.filter(
+        (field) => rowData[field] === undefined || String(rowData[field]).trim().length === 0
+      );
+
+      if (missingFields.length > 0) {
+        return send(res, 400, {
+          error: "VALIDATION_FAILED",
+          message: "Required FIR fields are missing.",
+          fields: missingFields,
+        });
+      }
+
+      const row = await getFirTable(req).insertRow(rowData);
+      return send(res, 201, { data: mapFirRow(row) });
+    } catch (error) {
+      console.error("Failed to create FIR", error);
+      return send(res, 500, {
+        error: "DATABASE_WRITE_FAILED",
+        message: "The FIR could not be created.",
+      });
+    }
+  }
+
+  if (firDetailMatch && req.method === "PATCH") {
+    try {
+      const body = await readJsonBody(req);
+      const updates = getAllowedFirFields(body);
+      const row = await getFirTable(req).updateRow({
+        ...updates,
+        ROWID: firDetailMatch[1],
+      });
+
+      return send(res, 200, { data: mapFirRow(row) });
+    } catch (error) {
+      console.error("Failed to update FIR", error);
+      return send(res, 500, {
+        error: "DATABASE_UPDATE_FAILED",
+        message: "The FIR could not be updated.",
+      });
+    }
+  }
+
+  if (routePath === "/api/firs" || firDetailMatch) {
+    return send(res, 405, {
+      error: "METHOD_NOT_ALLOWED",
+      message: "This FIR endpoint does not support the requested method.",
+    });
+  }
+
+  return false;
 }
 
 function normalize(url) {
@@ -202,15 +392,19 @@ function hotspotDetection(filters, hotspotRows) {
   };
 }
 
-module.exports = (req, res) => {
+module.exports = async (req, res) => {
   const url = new URL(req.url, "https://ksp.local");
+  const routePath = getRoutePath(url);
+  const firRouteHandled = await handleFirRoutes(req, res, url);
+  if (firRouteHandled !== false) return;
+
   const { role, filters } = normalize(url);
   if (!rolesWithMapAccess.has(role)) return send(res, 403, { error: "Restricted crime map access." });
 
-  auditLog.push({ id: `MAP-AUDIT-${auditLog.length + 1}`, path: url.pathname, role, filters, created_at: new Date().toISOString() });
+  auditLog.push({ id: `MAP-AUDIT-${auditLog.length + 1}`, path: routePath, role, filters, created_at: new Date().toISOString() });
 
-  if (url.pathname === "/api/map/incidents") return send(res, 200, wrap(incidentFeatures(filters, role)));
-  if (url.pathname === "/api/map/hotspots") {
+  if (routePath === "/api/map/incidents") return send(res, 200, wrap(incidentFeatures(filters, role)));
+  if (routePath === "/api/map/hotspots") {
     const hotspotRows = hotspots(filters);
     const features = hotspotRows.map((h) => ({ type: "Feature", geometry: { type: "Point", coordinates: h.center }, properties: Object.fromEntries(Object.entries(h).filter(([k]) => k !== "center")) }));
     return send(res, 200, wrap({ type: "FeatureCollection", features }, {
@@ -222,25 +416,25 @@ module.exports = (req, res) => {
       detection: hotspotDetection(filters, hotspotRows),
     }));
   }
-  if (url.pathname === "/api/map/clusters") {
+  if (routePath === "/api/map/clusters") {
     return send(res, 200, wrap({ type: "FeatureCollection", features: hotspots(filters).map((h) => ({ type: "Feature", geometry: { type: "Point", coordinates: h.center }, properties: { id: h.id.replace("HOT", "CLU"), incidentCount: h.incidentCount, dominantCrimeType: h.dominantCrimeType, district: h.district, policeStation: h.policeStation, severity: h.riskLevel } })) }));
   }
-  if (url.pathname === "/api/map/timeline") {
+  if (routePath === "/api/map/timeline") {
     const counts = {};
     applyFilters(filters).forEach((item) => { counts[item.date.slice(0, 10)] = (counts[item.date.slice(0, 10)] || 0) + 1; });
     return send(res, 200, wrap(Object.entries(counts).sort().map(([label, incidentCount]) => ({ label, incidentCount }))));
   }
-  if (url.pathname === "/api/map/pattern-alerts") {
+  if (routePath === "/api/map/pattern-alerts") {
     return send(res, 200, wrap(hotspots(filters).filter((h) => h.incidentCount >= h.previousIncidentCount * 1.5).map((h) => ({ id: `ALERT-${h.id}`, title: "Spike observed", description: `Spike observed in ${h.policeStation}: ${h.incidentCount} ${h.dominantCrimeType.toLowerCase()} incidents compared with ${h.previousIncidentCount} in the previous period.`, alertType: "spike", district: h.district, policeStation: h.policeStation, crimeType: h.dominantCrimeType, severity: h.riskLevel, riskScore: h.riskLevel === "critical" ? 86 : 72, relatedIncidentCount: h.incidentCount, createdAt: "2026-07-08T09:15:00+05:30" }))));
   }
-  if (url.pathname === "/api/map/boundaries") {
+  if (routePath === "/api/map/boundaries") {
     const features = boundaries
       .filter(([, district, station]) => (filters.district === "all" || district === filters.district) && (filters.policeStation === "all" || station === filters.policeStation))
       .map(([id, district, station, polygon]) => ({ type: "Feature", geometry: { type: "Polygon", coordinates: [polygon] }, properties: { id, district, policeStation: station } }));
     return send(res, 200, wrap({ type: "FeatureCollection", features }));
   }
-  if (url.pathname.startsWith("/api/map/case/")) {
-    const id = url.pathname.split("/").pop();
+  if (routePath.startsWith("/api/map/case/")) {
+    const id = routePath.split("/").pop();
     const item = incidents.find((row) => row.id === id);
     if (!item) return send(res, 404, wrap(null));
     return send(res, 200, wrap({

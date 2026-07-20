@@ -1,0 +1,28 @@
+{
+  "table": "officers",
+  "purpose": "Operational officer records for assignments and workload.",
+  "creationOrder": 10,
+  "tableScope": "operational",
+  "columns": [
+    { "name": "officer_id", "type": "Var Char", "maxLength": 100, "mandatory": true, "unique": true },
+    { "name": "display_name", "type": "Var Char", "maxLength": 160, "mandatory": true },
+    { "name": "rank_title", "type": "Var Char", "maxLength": 120, "mandatory": false },
+    { "name": "district_id", "type": "Var Char", "maxLength": 100, "mandatory": false, "foreignKey": "districts.district_id" },
+    { "name": "station_id", "type": "Var Char", "maxLength": 100, "mandatory": false, "foreignKey": "police_stations.station_id" },
+    { "name": "status", "type": "Var Char", "maxLength": 30, "mandatory": true, "default": "active" },
+    { "name": "created_at", "type": "Date Time", "mandatory": true },
+    { "name": "created_by", "type": "Var Char", "maxLength": 100, "mandatory": true },
+    { "name": "updated_at", "type": "Date Time", "mandatory": true },
+    { "name": "updated_by", "type": "Var Char", "maxLength": 100, "mandatory": true },
+    { "name": "version", "type": "Integer", "mandatory": true, "default": 1 },
+    { "name": "is_deleted", "type": "Boolean", "mandatory": true, "default": false },
+    { "name": "deleted_at", "type": "Date Time", "mandatory": false },
+    { "name": "deleted_by", "type": "Var Char", "maxLength": 100, "mandatory": false }
+  ],
+  "relationships": ["districts.district_id", "police_stations.station_id"],
+  "searchableFields": ["officer_id", "display_name", "district_id", "station_id", "status"],
+  "indexRecommendations": ["officer_id", "district_id", "station_id", "status", "is_deleted"],
+  "rolePermissions": { "read": ["Admin", "Investigator", "Analyst"], "write": ["Admin"] },
+  "archiveBehavior": "Soft delete only; retain assignment history.",
+  "auditRequirements": "Audit create, update, assignment, and soft delete."
+}

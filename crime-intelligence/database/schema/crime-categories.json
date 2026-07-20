@@ -1,0 +1,24 @@
+{
+  "table": "crime_categories",
+  "purpose": "Normalized crime category reference data.",
+  "creationOrder": 9,
+  "tableScope": "reference",
+  "columns": [
+    { "name": "category_id", "type": "Var Char", "maxLength": 100, "mandatory": true, "unique": true },
+    { "name": "name", "type": "Var Char", "maxLength": 160, "mandatory": true, "unique": true },
+    { "name": "severity_default", "type": "Var Char", "maxLength": 30, "mandatory": true, "default": "medium" },
+    { "name": "status", "type": "Var Char", "maxLength": 30, "mandatory": true, "default": "active" },
+    { "name": "created_at", "type": "Date Time", "mandatory": true },
+    { "name": "created_by", "type": "Var Char", "maxLength": 100, "mandatory": true },
+    { "name": "updated_at", "type": "Date Time", "mandatory": true },
+    { "name": "updated_by", "type": "Var Char", "maxLength": 100, "mandatory": true },
+    { "name": "version", "type": "Integer", "mandatory": true, "default": 1 },
+    { "name": "is_deleted", "type": "Boolean", "mandatory": true, "default": false }
+  ],
+  "relationships": [],
+  "searchableFields": ["category_id", "name", "status"],
+  "indexRecommendations": ["category_id", "name", "status", "is_deleted"],
+  "rolePermissions": { "read": ["Admin", "Investigator", "Analyst", "Officer", "Viewer"], "write": ["Admin"] },
+  "archiveBehavior": "Soft delete only after mapped incidents are migrated.",
+  "auditRequirements": "Audit create, update, and soft delete."
+}

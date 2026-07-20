@@ -1,7 +1,8 @@
 {
   "functions": {
     "targets": [
-      "ksp_crime_app_function"
+      "ksp_crime_app_function",
+      "database_connector_service"
     ],
     "ignore": [],
     "source": "functions"

@@ -1,0 +1,33 @@
+{
+  "table": "jurisdiction_access",
+  "purpose": "Jurisdiction or organizational access granted to application users.",
+  "creationOrder": 5,
+  "tableScope": "operational",
+  "columns": [
+    { "name": "access_key", "type": "Var Char", "maxLength": 260, "mandatory": true, "unique": true },
+    { "name": "user_id", "type": "Var Char", "maxLength": 100, "mandatory": true, "unique": false, "foreignKey": "users.email" },
+    { "name": "organization_id", "type": "Var Char", "maxLength": 100, "mandatory": false, "unique": false },
+    { "name": "district_id", "type": "Var Char", "maxLength": 100, "mandatory": false, "unique": false },
+    { "name": "station_id", "type": "Var Char", "maxLength": 100, "mandatory": false, "unique": false },
+    { "name": "access_level", "type": "Var Char", "maxLength": 30, "mandatory": true, "unique": false },
+    { "name": "status", "type": "Var Char", "maxLength": 30, "mandatory": true, "unique": false, "default": "active" },
+    { "name": "created_at", "type": "Date Time", "mandatory": true },
+    { "name": "created_by", "type": "Var Char", "maxLength": 100, "mandatory": true },
+    { "name": "updated_at", "type": "Date Time", "mandatory": true },
+    { "name": "updated_by", "type": "Var Char", "maxLength": 100, "mandatory": true },
+    { "name": "version", "type": "Integer", "mandatory": true, "default": 1 },
+    { "name": "is_archived", "type": "Boolean", "mandatory": true, "default": false },
+    { "name": "archived_at", "type": "Date Time", "mandatory": false },
+    { "name": "archived_by", "type": "Var Char", "maxLength": 100, "mandatory": false }
+  ],
+  "relationships": ["users.email"],
+  "searchableFields": ["user_id", "organization_id", "district_id", "station_id", "access_level", "status"],
+  "indexRecommendations": ["access_key", "user_id", "organization_id", "district_id", "station_id", "status"],
+  "rolePermissions": {
+    "read": ["Self", "Admin"],
+    "write": ["Admin"]
+  },
+  "archiveBehavior": "Archive revoked access grants after status is changed from active.",
+  "auditRequirements": "Audit every jurisdiction grant, update, and archival."
+}
+

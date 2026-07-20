@@ -1,9 +1,9 @@
 import { mapGet } from "../_handler";
-import { getMockIncidents } from "@/lib/crime-map/map-api";
+import { getDatabaseMapIncidents } from "@/data/services/map-service";
 
 export async function GET(request: Request) {
-  return mapGet(request, ({ filters }) => ({
+  return mapGet(request, async ({ filters }) => ({
     source: "mock",
-    data: getMockIncidents(filters),
+    data: await getDatabaseMapIncidents(filters),
   }));
 }

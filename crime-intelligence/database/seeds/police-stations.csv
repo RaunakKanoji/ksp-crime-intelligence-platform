@@ -1,0 +1,7 @@
+station_id,district_id,name,status,created_at,created_by,updated_at,updated_by,version,is_deleted
+CENTRAL-DIVISION,BENGALURU-CITY,Central Division,active,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false
+WHITEFIELD,BENGALURU-CITY,Whitefield,active,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false
+DEVARAJA,MYSURU,Devaraja,active,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false
+NAZARBAD,MYSURU,Nazarbad,active,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false
+CAMP,BELAGAVI,Camp,active,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false
+STATION-BAZAR,KALABURAGI,Station Bazar,active,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false

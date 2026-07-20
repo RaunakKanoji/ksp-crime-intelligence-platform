@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AppShell, useAppSession } from "@/components/layout/AppShell";
-import { getDashboardOverview } from "@/lib/dashboard/service";
+import { getDashboardOverview } from "@/lib/dashboard/api";
 import type { DashboardData, DashboardFilters } from "@/lib/dashboard/types";
 import {
   DashboardEmpty,

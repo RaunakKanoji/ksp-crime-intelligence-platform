@@ -1,5 +1,5 @@
 {
-  "command": "sh -c 'PORT=${X_ZOHO_CATALYST_LISTEN_PORT:-3000} npm run start'",
+  "command": "sh -c 'PORT=${X_ZOHO_CATALYST_LISTEN_PORT:-3000} npm run start:appsail'",
   "build_path": ".",
   "stack": "node22",
   "env_variables": {},

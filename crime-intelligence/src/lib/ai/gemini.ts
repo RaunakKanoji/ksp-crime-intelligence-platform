@@ -1,6 +1,6 @@
 // Server-side Gemini NLP interpreter for AI Querying.
 //
-// Uses the Gemini Interactions REST API directly so we do not add a new SDK
+// Uses the Gemini REST API directly so we do not add a new SDK
 // dependency. Only prompt text and allowed enum values are sent; FIR records,
 // PII, and investigation notes are never sent to Gemini.
 
@@ -19,13 +19,13 @@ interface GeminiInterpretationPayload {
   confidence: "high" | "medium" | "low";
 }
 
-interface GeminiInteractionResponse {
-  output_text?: string;
-  steps?: Array<{
-    output?: Array<{
-      type?: string;
-      text?: string;
-    }>;
+interface GeminiGenerateContentResponse {
+  candidates?: Array<{
+    content?: {
+      parts?: Array<{
+        text?: string;
+      }>;
+    };
   }>;
 }
 
@@ -35,7 +35,8 @@ export interface GeminiInterpretationResult {
   providerNote: string;
 }
 
-const GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/interactions";
+const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models";
+const GEMINI_TIMEOUT_MS = 15000;
 const ALLOWED_METRICS: QueryMetric[] = ["count", "ranking", "trend", "lookup"];
 const ALLOWED_DIMENSIONS: Array<StructuredFilters["dimension"]> = [
   "district",
@@ -45,13 +46,13 @@ const ALLOWED_DIMENSIONS: Array<StructuredFilters["dimension"]> = [
   null,
 ];
 
-function parseGeminiText(response: GeminiInteractionResponse): string {
-  if (typeof response.output_text === "string" && response.output_text.trim()) {
-    return response.output_text.trim();
-  }
+function geminiEndpoint(model: string): string {
+  return `${GEMINI_BASE_URL}/${encodeURIComponent(model)}:generateContent`;
+}
 
-  const text = response.steps
-    ?.flatMap((step) => step.output ?? [])
+function parseGeminiText(response: GeminiGenerateContentResponse): string {
+  const text = response.candidates
+    ?.flatMap((candidate) => candidate.content?.parts ?? [])
     .map((part) => part.text)
     .filter((part): part is string => typeof part === "string")
     .join("");
@@ -125,10 +126,10 @@ function validatePayload(payload: unknown): GeminiInterpretationPayload {
 }
 
 export async function interpretQueryWithGemini(prompt: string): Promise<GeminiInterpretationResult | null> {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.AI_API_KEY || process.env.GEMINI_API_KEY;
   if (!apiKey) return null;
 
-  const model = process.env.GEMINI_NLP_MODEL || "gemini-3.5-flash";
+  const model = process.env.AI_MODEL || process.env.GEMINI_NLP_MODEL || "gemini-3.5-flash";
   const systemInstruction = [
     "You interpret natural-language crime analytics queries for a Karnataka State Police demo app.",
     "Return JSON only. Do not include markdown.",
@@ -142,27 +143,63 @@ export async function interpretQueryWithGemini(prompt: string): Promise<GeminiIn
     'Schema: {"intent":"string","summary":"string","filters":{"metric":"count|ranking|trend|lookup","category":"allowed category|null","district":"allowed district|null","station":"string|null","timeframeDays":"number|null","dimension":"district|station|category|time|null"},"confidence":"high|medium|low"}',
   ].join("\n");
 
-  const response = await fetch(GEMINI_ENDPOINT, {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), GEMINI_TIMEOUT_MS);
+
+  const response = await fetch(geminiEndpoint(model), {
     method: "POST",
+    signal: controller.signal,
     headers: {
       "Content-Type": "application/json",
       "x-goog-api-key": apiKey,
     },
     body: JSON.stringify({
-      model,
-      system_instruction: systemInstruction,
-      input: prompt,
-      generation_config: {
+      systemInstruction: {
+        parts: [{ text: systemInstruction }],
+      },
+      contents: [
+        {
+          role: "user",
+          parts: [{ text: prompt }],
+        },
+      ],
+      generationConfig: {
         temperature: 0,
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: "OBJECT",
+          required: ["intent", "summary", "filters", "confidence"],
+          properties: {
+            intent: { type: "STRING" },
+            summary: { type: "STRING" },
+            confidence: { type: "STRING", enum: ["high", "medium", "low"] },
+            filters: {
+              type: "OBJECT",
+              required: ["metric", "category", "district", "station", "timeframeDays", "dimension"],
+              properties: {
+                metric: { type: "STRING", enum: ALLOWED_METRICS },
+                category: { type: "STRING", nullable: true, enum: CATEGORIES },
+                district: { type: "STRING", nullable: true, enum: DISTRICTS },
+                station: { type: "STRING", nullable: true },
+                timeframeDays: { type: "NUMBER", nullable: true },
+                dimension: {
+                  type: "STRING",
+                  nullable: true,
+                  enum: ALLOWED_DIMENSIONS.filter(Boolean),
+                },
+              },
+            },
+          },
+        },
       },
     }),
-  });
+  }).finally(() => clearTimeout(timeout));
 
   if (!response.ok) {
     throw new Error(`Gemini NLP request failed with status ${response.status}.`);
   }
 
-  const data = (await response.json()) as GeminiInteractionResponse;
+  const data = (await response.json()) as GeminiGenerateContentResponse;
   const text = parseGeminiText(data);
   const parsed = validatePayload(extractJson(text));
 

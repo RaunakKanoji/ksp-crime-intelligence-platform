@@ -1,11 +1,5 @@
-import { FeaturePlaceholder } from "@/components/layout/FeaturePlaceholder";
+import HelpAndDocumentation from "@/components/help-and-documentation/HelpAndDocumentation";
 
 export default function HelpPage() {
-  return (
-    <FeaturePlaceholder
-      title="Help & Documentation"
-      description="Guidance on using the Crime Intelligence portal and its modules."
-      featureId="059"
-    />
-  );
+  return <HelpAndDocumentation />;
 }

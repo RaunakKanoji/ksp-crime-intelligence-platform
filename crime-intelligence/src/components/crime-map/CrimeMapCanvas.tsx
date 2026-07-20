@@ -18,7 +18,7 @@ import type {
 import { DEFAULT_MAP_CENTER, getMapStyle } from "@/lib/crime-map/layer-config";
 import { MapLegend } from "./MapLegend";
 
-type LoadState = "loading" | "ready" | "empty" | "error";
+type LoadState = "loading" | "refreshing" | "ready" | "empty" | "error";
 
 const sourceIds = {
   incidents: "crime-incidents",
@@ -305,12 +305,27 @@ export function CrimeMapCanvas({
   }, [layers, loaded]);
 
   return (
-    <section className="relative h-[34rem] overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm lg:h-[calc(100vh-14.5rem)]">
+    <section
+      className="relative h-[34rem] overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm lg:h-[calc(100vh-14.5rem)]"
+      aria-label="Interactive crime map"
+      aria-describedby="crime-map-keyboard-help"
+    >
       {/* maplibre-gl.css forces `.maplibregl-map { position: relative }`, which
           overrides Tailwind's `absolute`; size the container with h/w instead. */}
-      <div ref={containerRef} className="h-full w-full" />
+      <div ref={containerRef} className="h-full w-full" tabIndex={0} />
+      <p id="crime-map-keyboard-help" className="sr-only">
+        The map is interactive. Use the incident list after the map to review and select records without using drag gestures.
+      </p>
       <div className="pointer-events-none absolute left-3 top-3 rounded-lg border border-slate-200 bg-white/95 px-3 py-2 text-xs font-medium text-slate-600 shadow-sm">
         Bengaluru/Karnataka operational map
+      </div>
+      <div className="pointer-events-none absolute right-3 top-3 flex max-w-[16rem] flex-col gap-1 rounded-lg border border-slate-200 bg-white/95 px-3 py-2 text-xs text-slate-600 shadow-sm">
+        <span className="font-semibold text-slate-800">
+          {state === "refreshing" ? "Refreshing layers" : "Layer status"}
+        </span>
+        <span>Incidents: {layers.incidents || layers.clusters || layers.heatmap ? `${incidents.features.length} loaded` : "hidden"}</span>
+        <span>Hotspots: {layers.hotspots ? `${hotspots.features.length} loaded` : "hidden"}</span>
+        <span>Boundaries: {layers.boundaries ? `${boundaries.features.length} loaded` : "hidden"}</span>
       </div>
       <div className="absolute bottom-3 left-3">
         <MapLegend />
@@ -320,9 +335,14 @@ export function CrimeMapCanvas({
           Loading crime map data...
         </div>
       )}
+      {state === "refreshing" && (
+        <div className="pointer-events-none absolute left-3 top-24 z-20 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-900 shadow-sm">
+          Updating visible map layers...
+        </div>
+      )}
       {state === "error" && (
-        <div className="absolute inset-0 z-20 grid place-items-center bg-white/75 text-sm font-semibold text-red-700">
-          Unable to load map data. Demo data fallback is available after retry.
+        <div className="absolute inset-x-3 top-24 z-20 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-800 shadow-sm">
+          Layer refresh failed. Current map data remains visible.
         </div>
       )}
       {state === "empty" && (

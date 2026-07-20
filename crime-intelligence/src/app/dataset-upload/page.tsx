@@ -1,12 +1,5 @@
-import { FeaturePlaceholder } from "@/components/layout/FeaturePlaceholder";
+import { DatasetUploadDashboard } from "@/components/admin/DatasetUploadDashboard";
 
 export default function DatasetUploadPage() {
-  return (
-    <FeaturePlaceholder
-      title="Dataset Upload"
-      description="Import and validate crime datasets into the intelligence platform."
-      requiredPermission="page:dataset-upload"
-      featureId="036"
-    />
-  );
+  return <DatasetUploadDashboard />;
 }

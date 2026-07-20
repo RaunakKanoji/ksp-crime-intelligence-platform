@@ -25,6 +25,24 @@
           "type": 3
         }
       ]
+    },
+    {
+      "idx": 2,
+      "id": "52951000000013052",
+      "name": "ksp-crime-intelligence",
+      "domain": {
+        "id": "50043637255",
+        "name": "ksp-crime-intelligence-60076540751.development"
+      },
+      "timezone": "Asia/Kolkata",
+      "env": [
+        {
+          "idx": 1,
+          "id": "60076540751",
+          "name": "Development",
+          "type": 3
+        }
+      ]
     }
   ]
 }

@@ -1,0 +1,32 @@
+{
+  "table": "user_role_assignments",
+  "purpose": "Assignment history connecting application users to roles.",
+  "creationOrder": 4,
+  "tableScope": "operational",
+  "columns": [
+    { "name": "assignment_key", "type": "Var Char", "maxLength": 220, "mandatory": true, "unique": true },
+    { "name": "user_id", "type": "Var Char", "maxLength": 100, "mandatory": true, "unique": false, "foreignKey": "users.email" },
+    { "name": "role_id", "type": "Var Char", "maxLength": 100, "mandatory": true, "unique": false, "foreignKey": "roles.name" },
+    { "name": "status", "type": "Var Char", "maxLength": 30, "mandatory": true, "unique": false, "default": "active" },
+    { "name": "assigned_at", "type": "Date Time", "mandatory": true },
+    { "name": "assigned_by", "type": "Var Char", "maxLength": 100, "mandatory": true },
+    { "name": "removed_at", "type": "Date Time", "mandatory": false },
+    { "name": "removed_by", "type": "Var Char", "maxLength": 100, "mandatory": false },
+    { "name": "created_at", "type": "Date Time", "mandatory": true },
+    { "name": "created_by", "type": "Var Char", "maxLength": 100, "mandatory": true },
+    { "name": "updated_at", "type": "Date Time", "mandatory": true },
+    { "name": "updated_by", "type": "Var Char", "maxLength": 100, "mandatory": true },
+    { "name": "version", "type": "Integer", "mandatory": true, "default": 1 },
+    { "name": "is_archived", "type": "Boolean", "mandatory": true, "default": false }
+  ],
+  "relationships": ["users.email", "roles.name"],
+  "searchableFields": ["user_id", "role_id", "status"],
+  "indexRecommendations": ["assignment_key", "user_id", "role_id", "status", "assigned_at"],
+  "rolePermissions": {
+    "read": ["Admin"],
+    "write": ["Admin"]
+  },
+  "archiveBehavior": "Close assignments with removed_at/removed_by; do not hard-delete assignment history.",
+  "auditRequirements": "Audit every role assignment and removal."
+}
+

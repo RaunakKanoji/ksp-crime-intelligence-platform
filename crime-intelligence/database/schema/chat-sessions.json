@@ -1,0 +1,20 @@
+{
+  "table": "chat_sessions",
+  "purpose": "AI assistant chat sessions.",
+  "creationOrder": 17,
+  "tableScope": "operational",
+  "columns": [
+    { "name": "session_id", "type": "Var Char", "maxLength": 120, "mandatory": true, "unique": true },
+    { "name": "owner_id", "type": "Var Char", "maxLength": 100, "mandatory": true, "foreignKey": "users.email" },
+    { "name": "title", "type": "Var Char", "maxLength": 180, "mandatory": true },
+    { "name": "created_at", "type": "Date Time", "mandatory": true },
+    { "name": "updated_at", "type": "Date Time", "mandatory": true },
+    { "name": "is_deleted", "type": "Boolean", "mandatory": true, "default": false }
+  ],
+  "relationships": ["users.email"],
+  "searchableFields": ["session_id", "owner_id", "title"],
+  "indexRecommendations": ["session_id", "owner_id", "updated_at", "is_deleted"],
+  "rolePermissions": { "read": ["Owner", "Admin"], "write": ["Owner", "Admin"] },
+  "archiveBehavior": "Soft delete with retention policy.",
+  "auditRequirements": "Audit sensitive query lifecycle actions."
+}

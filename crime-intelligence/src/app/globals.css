@@ -6,11 +6,72 @@
   --foreground-rgb: 15, 23, 42;
   --background-start-rgb: 246, 248, 251;
   --background-end-rgb: 246, 248, 251;
+  --ksp-bg: 246 248 251;
+  --ksp-surface: 255 255 255;
+  --ksp-surface-elevated: 255 255 255;
+  --ksp-border: 203 213 225;
+  --ksp-divider: 226 232 240;
+  --ksp-text-primary: 15 23 42;
+  --ksp-text-secondary: 71 85 105;
+  --ksp-text-muted: 100 116 139;
+  --ksp-text-inverse: 255 255 255;
+  --ksp-primary: 15 118 110;
+  --ksp-primary-hover: 17 94 89;
+  --ksp-secondary: 51 65 85;
+  --ksp-danger: 185 28 28;
+  --ksp-warning: 180 83 9;
+  --ksp-success: 4 120 87;
+  --ksp-info: 37 99 235;
+  --ksp-muted: 241 245 249;
+  --ksp-focus: 20 184 166;
+  --ksp-disabled: 226 232 240;
+  --ksp-map-panel: 255 255 255;
+  --ksp-chart-grid: 226 232 240;
+  --ksp-chart-label: 71 85 105;
+  --ksp-radius-sm: 6px;
+  --ksp-radius: 8px;
+  --ksp-radius-lg: 12px;
+  --ksp-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --ksp-shadow-lg: 0 8px 24px rgba(15, 23, 42, 0.12);
+  --ksp-page-max: 1280px;
+  --ksp-page-wide: 1440px;
+  --ksp-form-max: 720px;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-start-rgb));
+  font-feature-settings: "tnum";
+  text-rendering: optimizeLegibility;
+}
+
+*:focus-visible {
+  outline: 2px solid rgb(var(--ksp-focus));
+  outline-offset: 2px;
+}
+
+html {
+  scroll-padding-top: 5rem;
+}
+
+button,
+[role="button"],
+input,
+select,
+textarea,
+a {
+  touch-action: manipulation;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 .auth-card {
@@ -225,5 +286,152 @@ body {
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  .ksp-page {
+    @apply mx-auto w-full px-4 py-6 sm:px-6 lg:px-8;
+    max-width: var(--ksp-page-max);
+  }
+
+  .ksp-page-wide {
+    max-width: var(--ksp-page-wide);
+  }
+
+  .ksp-page-header {
+    @apply mb-6 flex flex-col gap-3 border-b border-app-divider pb-5 sm:flex-row sm:items-start sm:justify-between;
+  }
+
+  .ksp-page-title {
+    @apply text-2xl font-semibold tracking-tight text-ink-primary sm:text-2xl;
+  }
+
+  .ksp-page-description {
+    @apply mt-1 max-w-3xl text-sm leading-6 text-ink-secondary;
+  }
+
+  .ksp-section-title {
+    @apply text-base font-semibold text-ink-primary;
+  }
+
+  .ksp-card {
+    @apply rounded-app border border-app-border bg-app-surface p-5 shadow-app;
+  }
+
+  .ksp-card-compact {
+    @apply rounded-app border border-app-border bg-app-surface p-4 shadow-app;
+  }
+
+  .ksp-button {
+    @apply inline-flex min-h-11 items-center justify-center rounded-app px-4 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .ksp-button-primary {
+    @apply ksp-button bg-app-primary text-ink-inverse hover:bg-app-primary-hover active:bg-app-primary-hover;
+  }
+
+  .ksp-button-secondary {
+    @apply ksp-button border border-app-border bg-app-surface text-ink-secondary hover:bg-app-muted hover:text-ink-primary;
+  }
+
+  .ksp-button-ghost {
+    @apply ksp-button text-ink-secondary hover:bg-app-muted hover:text-ink-primary;
+  }
+
+  .ksp-button-danger {
+    @apply ksp-button border border-red-200 bg-red-50 text-red-700 hover:bg-red-100;
+  }
+
+  .ksp-icon-button {
+    @apply inline-flex h-11 w-11 items-center justify-center rounded-app text-ink-secondary transition hover:bg-app-muted hover:text-ink-primary disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .ksp-input {
+    @apply min-h-11 w-full rounded-app border border-app-border bg-app-surface px-3 text-sm text-ink-primary outline-none transition placeholder:text-ink-muted focus:border-app-primary disabled:cursor-not-allowed disabled:bg-app-muted disabled:text-ink-muted;
+  }
+
+  .ksp-textarea {
+    @apply min-h-24 w-full rounded-app border border-app-border bg-app-surface px-3 py-2 text-sm text-ink-primary outline-none transition placeholder:text-ink-muted focus:border-app-primary disabled:cursor-not-allowed disabled:bg-app-muted disabled:text-ink-muted;
+  }
+
+  .ksp-label {
+    @apply text-xs font-semibold text-ink-secondary;
+  }
+
+  .ksp-meta-label {
+    @apply text-xs font-semibold uppercase tracking-wide text-ink-muted;
+  }
+
+  .ksp-badge {
+    @apply inline-flex items-center rounded-full border border-app-border bg-app-muted px-2.5 py-1 text-xs font-semibold text-ink-secondary;
+  }
+
+  .ksp-badge-success {
+    @apply border-emerald-200 bg-emerald-50 text-emerald-800;
+  }
+
+  .ksp-badge-warning {
+    @apply border-amber-200 bg-amber-50 text-amber-800;
+  }
+
+  .ksp-badge-danger {
+    @apply border-red-200 bg-red-50 text-red-700;
+  }
+
+  .ksp-alert {
+    @apply rounded-app border border-app-border bg-app-surface p-4 text-sm text-ink-secondary;
+  }
+
+  .ksp-alert-info {
+    @apply border-blue-200 bg-blue-50 text-blue-900;
+  }
+
+  .ksp-alert-success {
+    @apply border-emerald-200 bg-emerald-50 text-emerald-800;
+  }
+
+  .ksp-alert-warning {
+    @apply border-amber-200 bg-amber-50 text-amber-900;
+  }
+
+  .ksp-alert-danger {
+    @apply border-red-200 bg-red-50 text-red-800;
+  }
+
+  .ksp-table {
+    @apply w-full border-collapse text-left text-sm text-ink-secondary;
+  }
+
+  .ksp-table thead {
+    @apply border-y border-app-divider bg-app-muted text-xs font-semibold uppercase tracking-wide text-ink-muted;
+  }
+
+  .ksp-table th {
+    @apply px-4 py-3 font-semibold;
+  }
+
+  .ksp-table td {
+    @apply border-b border-app-divider px-4 py-3 align-top;
+  }
+
+  .ksp-map-panel {
+    @apply rounded-app border border-app-border bg-white/95 p-4 shadow-app-lg backdrop-blur-sm;
+  }
+
+  .ksp-skip-link {
+    @apply fixed left-4 top-4 z-[100] -translate-y-24 rounded-app bg-slate-950 px-4 py-3 text-sm font-semibold text-white shadow-app-lg transition focus:translate-y-0;
+  }
+
+  .ksp-responsive-table {
+    @apply overflow-x-auto rounded-app border border-app-border bg-app-surface;
+  }
+
+  .ksp-responsive-table table {
+    @apply min-w-full;
   }
 }

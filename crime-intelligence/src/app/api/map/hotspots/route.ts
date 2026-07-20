@@ -1,9 +1,12 @@
 import { mapGet } from "../_handler";
-import { getMockHotspotDetection, getMockHotspots } from "@/lib/crime-map/map-api";
+import { getDatabaseMapHotspots } from "@/data/services/map-service";
+import { buildHotspotDetectionSummary } from "@/lib/crime-map/hotspot-detection";
+import { getDatabaseMapIncidents } from "@/data/services/map-service";
 
 export async function GET(request: Request) {
-  return mapGet(request, ({ filters }) => {
-    const data = getMockHotspots(filters);
+  return mapGet(request, async ({ filters }) => {
+    const data = await getDatabaseMapHotspots(filters);
+    const incidents = await getDatabaseMapIncidents(filters);
     return {
       source: "mock",
       data,
@@ -12,7 +15,7 @@ export async function GET(request: Request) {
         criticalHotspots: data.features.filter((feature) => feature.properties.severity === "critical").length,
         risingAreas: data.features.filter((feature) => feature.properties.trend === "rising" || feature.properties.trend === "spike").length,
       },
-      detection: getMockHotspotDetection(filters),
+      detection: buildHotspotDetectionSummary(incidents, data),
     };
   });
 }

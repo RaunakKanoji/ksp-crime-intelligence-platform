@@ -1,0 +1,177 @@
+{
+  "version": 1,
+  "requiredEnvironment": [
+    "CATALYST_PROJECT_ID",
+    "CATALYST_ENVIRONMENT",
+    "CATALYST_AUTH_DOMAIN"
+  ],
+  "tables": [
+    {
+      "name": "roles",
+      "schema": "database/schema/roles.json",
+      "seed": "database/seeds/roles.csv",
+      "importConfig": "database/import-config/roles.json",
+      "dependsOn": [],
+      "category": "reference",
+      "uniqueLookup": "name",
+      "hasSeedData": true
+    },
+    {
+      "name": "users",
+      "schema": "database/schema/users.json",
+      "seed": "database/seeds/development-users.csv",
+      "importConfig": "database/import-config/development-users.json",
+      "dependsOn": [],
+      "category": "operational",
+      "uniqueLookup": "email",
+      "hasSeedData": true,
+      "developmentOnlySeed": true
+    },
+    {
+      "name": "user_profiles",
+      "schema": "database/schema/user-profiles.json",
+      "dependsOn": [
+        "users"
+      ],
+      "category": "operational",
+      "uniqueLookup": "user_id",
+      "hasSeedData": false
+    },
+    {
+      "name": "user_role_assignments",
+      "schema": "database/schema/user-role-assignments.json",
+      "seed": "database/seeds/user-role-assignments.csv",
+      "importConfig": "database/import-config/user-role-assignments.json",
+      "dependsOn": [
+        "users",
+        "roles"
+      ],
+      "category": "operational",
+      "uniqueLookup": "assignment_key",
+      "hasSeedData": true,
+      "developmentOnlySeed": true
+    },
+    {
+      "name": "jurisdiction_access",
+      "schema": "database/schema/jurisdiction-access.json",
+      "seed": "database/seeds/jurisdiction-access.csv",
+      "importConfig": "database/import-config/jurisdiction-access.json",
+      "dependsOn": [
+        "users"
+      ],
+      "category": "operational",
+      "uniqueLookup": "access_key",
+      "hasSeedData": true,
+      "developmentOnlySeed": true
+    },
+    {
+      "name": "audit_events",
+      "schema": "database/schema/audit-events.json",
+      "dependsOn": [
+        "users"
+      ],
+      "category": "operational",
+      "hasSeedData": false,
+      "appendOnly": true
+    },
+    {
+      "name": "districts",
+      "schema": "database/schema/districts.json",
+      "seed": "database/seeds/districts.csv",
+      "dependsOn": [],
+      "category": "reference",
+      "uniqueLookup": "district_id",
+      "hasSeedData": true
+    },
+    {
+      "name": "police_stations",
+      "schema": "database/schema/police-stations.json",
+      "seed": "database/seeds/police-stations.csv",
+      "dependsOn": ["districts"],
+      "category": "reference",
+      "uniqueLookup": "station_id",
+      "hasSeedData": true
+    },
+    {
+      "name": "officers",
+      "schema": "database/schema/officers.json",
+      "dependsOn": ["districts", "police_stations"],
+      "category": "operational",
+      "uniqueLookup": "officer_id",
+      "hasSeedData": false
+    },
+    {
+      "name": "crime_categories",
+      "schema": "database/schema/crime-categories.json",
+      "seed": "database/seeds/crime-categories.csv",
+      "dependsOn": [],
+      "category": "reference",
+      "uniqueLookup": "category_id",
+      "hasSeedData": true
+    },
+    {
+      "name": "crime_incidents",
+      "schema": "database/schema/crime-incidents.json",
+      "dependsOn": ["districts", "police_stations", "crime_categories"],
+      "category": "operational",
+      "uniqueLookup": "incident_id",
+      "hasSeedData": false
+    },
+    {
+      "name": "incident_locations",
+      "schema": "database/schema/incident-locations.json",
+      "dependsOn": ["crime_incidents"],
+      "category": "operational",
+      "uniqueLookup": "location_id",
+      "hasSeedData": false
+    },
+    {
+      "name": "case_records",
+      "schema": "database/schema/case-records.json",
+      "dependsOn": ["crime_incidents"],
+      "category": "operational",
+      "uniqueLookup": "case_id",
+      "hasSeedData": false
+    },
+    {
+      "name": "alerts",
+      "schema": "database/schema/alerts.json",
+      "dependsOn": ["crime_incidents"],
+      "category": "operational",
+      "uniqueLookup": "alert_id",
+      "hasSeedData": false
+    },
+    {
+      "name": "reports",
+      "schema": "database/schema/reports.json",
+      "dependsOn": ["users"],
+      "category": "operational",
+      "uniqueLookup": "report_id",
+      "hasSeedData": false
+    },
+    {
+      "name": "saved_queries",
+      "schema": "database/schema/saved-queries.json",
+      "dependsOn": ["users"],
+      "category": "operational",
+      "uniqueLookup": "query_id",
+      "hasSeedData": false
+    },
+    {
+      "name": "chat_sessions",
+      "schema": "database/schema/chat-sessions.json",
+      "dependsOn": ["users"],
+      "category": "operational",
+      "uniqueLookup": "session_id",
+      "hasSeedData": false
+    },
+    {
+      "name": "chat_messages",
+      "schema": "database/schema/chat-messages.json",
+      "dependsOn": ["chat_sessions"],
+      "category": "operational",
+      "uniqueLookup": "message_id",
+      "hasSeedData": false
+    }
+  ]
+}

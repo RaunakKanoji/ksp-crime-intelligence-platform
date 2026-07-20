@@ -1,0 +1,25 @@
+{
+  "table": "alerts",
+  "purpose": "Operational alerts and risk notifications.",
+  "creationOrder": 14,
+  "tableScope": "operational",
+  "columns": [
+    { "name": "alert_id", "type": "Var Char", "maxLength": 120, "mandatory": true, "unique": true },
+    { "name": "incident_id", "type": "Var Char", "maxLength": 120, "mandatory": false, "foreignKey": "crime_incidents.incident_id" },
+    { "name": "title", "type": "Var Char", "maxLength": 180, "mandatory": true },
+    { "name": "severity", "type": "Var Char", "maxLength": 30, "mandatory": true },
+    { "name": "status", "type": "Var Char", "maxLength": 30, "mandatory": true },
+    { "name": "created_at", "type": "Date Time", "mandatory": true },
+    { "name": "created_by", "type": "Var Char", "maxLength": 100, "mandatory": true },
+    { "name": "updated_at", "type": "Date Time", "mandatory": true },
+    { "name": "updated_by", "type": "Var Char", "maxLength": 100, "mandatory": true },
+    { "name": "version", "type": "Integer", "mandatory": true, "default": 1 },
+    { "name": "is_deleted", "type": "Boolean", "mandatory": true, "default": false }
+  ],
+  "relationships": ["crime_incidents.incident_id"],
+  "searchableFields": ["alert_id", "incident_id", "title", "severity", "status"],
+  "indexRecommendations": ["alert_id", "incident_id", "severity", "status", "created_at"],
+  "rolePermissions": { "read": ["Jurisdiction scoped"], "write": ["Server only", "Admin"] },
+  "archiveBehavior": "Soft delete only.",
+  "auditRequirements": "Audit creation, acknowledgement, and resolution."
+}

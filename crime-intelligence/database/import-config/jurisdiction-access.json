@@ -1,0 +1,6 @@
+{
+  "table_identifier": "jurisdiction_access",
+  "operation": "upsert",
+  "find_by": "access_key"
+}
+
