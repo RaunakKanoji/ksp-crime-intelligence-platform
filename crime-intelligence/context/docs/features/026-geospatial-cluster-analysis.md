@@ -152,4 +152,13 @@ Current crime analysis workflows can be fragmented, manual, and dependent on spr
 - Update `docs/progress-tracker.md` after meaningful changes.
 
 ## 20. Status
-Initial status: Not Started.
+Status: Done (2026-07-09).
+
+Implemented at `/crime-map/clusters` with an authenticated, role-gated API and a
+typed radius-neighborhood connected-components service. Radius, minimum points,
+category, district, boundary ID, and time range are validated server-side. Raw
+incident coordinates and exact addresses are never returned; aggregate centers
+are rounded to two decimal places and labeled district-scale masked. A responsive
+provider-free SVG map is used as the guaranteed fallback. Until Catalyst location
+tables are active, the feature uses clearly labeled sample incidents. Audit
+persistence remains pending feature 035.
