@@ -158,4 +158,14 @@ Current crime analysis workflows can be fragmented, manual, and dependent on spr
 - Keep algorithm/AI logic explainable and separately testable.
 
 ## 20. Status
-Initial status: Not Started.
+Status: Done.
+
+Implemented on 2026-07-09 at `/intelligence/pattern-discovery`, backed by `/api/intelligence/pattern-discovery`.
+
+Implementation decisions:
+- Uses deterministic, documented rule matching over permission-filtered sample incident data because a connected Catalyst Data Store / AI orchestration layer is not available in this workspace.
+- Supports time-based, location-based, category-based, modus-operandi, and accused-linked pattern observations.
+- Shows active rule definitions, source fields, confidence, limitations, redaction status, and mandatory human-review warning.
+- Generated observations are templated summaries of rule matches; no unrestricted generative model is used.
+- Adds `page:crime-pattern-discovery` permission for Admin, Investigator, and Analyst roles.
+- Audit persistence remains pending feature 035; the API returns an audit note describing required Catalyst Data Store logging once audit logs are active.
