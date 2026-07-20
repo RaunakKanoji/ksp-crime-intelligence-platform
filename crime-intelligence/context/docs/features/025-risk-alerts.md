@@ -158,4 +158,13 @@ Current crime analysis workflows can be fragmented, manual, and dependent on spr
 - Keep algorithm/AI logic explainable and separately testable.
 
 ## 20. Status
-Initial status: Not Started.
+Status: Done (2026-07-09).
+
+Implemented at `/cases/risk-alerts` with an authenticated, role-gated API and
+typed deterministic threshold service. Alerts cover theft spikes, repeated
+generalized locations, repeat-accused identity groupings, high-risk unresolved
+cases, and district/category spikes. Every alert includes severity, confidence,
+review status, source fields, threshold logic, limitations, and a human-review
+requirement. Review status is currently permission-filtered read-only sample data;
+mutation is deferred until persistent alert management and feature 035 audit logs
+are active.
