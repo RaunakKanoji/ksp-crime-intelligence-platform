@@ -154,4 +154,14 @@ Current crime analysis workflows can be fragmented, manual, and dependent on spr
 - Update `docs/progress-tracker.md` after meaningful changes.
 
 ## 20. Status
-Initial status: Not Started.
+Status: Done (2026-07-09).
+
+Implemented at `/crime-map/location-intelligence` with an authenticated,
+role-gated API and typed station-area aggregation service. Stable location IDs,
+category, and date ranges are validated server-side. Exact incident coordinates,
+addresses, and protected identities are never returned; the aggregate center is
+rounded to two decimal places and displayed through a provider-free SVG fallback.
+Repeat-offender references and FIR detail links are permission-filtered. Patrol
+output is a cautious aggregate review prompt, not an operational instruction.
+Until Catalyst location tables are active, the feature uses clearly labeled
+sample incidents. Audit persistence remains pending feature 035.
