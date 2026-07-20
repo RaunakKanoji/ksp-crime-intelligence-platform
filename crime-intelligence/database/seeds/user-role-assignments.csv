@@ -1,0 +1,7 @@
+assignment_key,user_id,role_id,status,assigned_at,assigned_by,removed_at,removed_by,created_at,created_by,updated_at,updated_by,version,is_archived
+dev.admin@ksp.local:Admin,dev.admin@ksp.local,Admin,active,2026-07-11T00:00:00.000Z,seed,,,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false
+dev.investigator@ksp.local:Investigator,dev.investigator@ksp.local,Investigator,active,2026-07-11T00:00:00.000Z,seed,,,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false
+dev.analyst@ksp.local:Analyst,dev.analyst@ksp.local,Analyst,active,2026-07-11T00:00:00.000Z,seed,,,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false
+dev.officer@ksp.local:Officer,dev.officer@ksp.local,Officer,active,2026-07-11T00:00:00.000Z,seed,,,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false
+dev.viewer@ksp.local:Viewer,dev.viewer@ksp.local,Viewer,active,2026-07-11T00:00:00.000Z,seed,,,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false
+

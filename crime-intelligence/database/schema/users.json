@@ -1,0 +1,36 @@
+{
+  "table": "users",
+  "purpose": "Application profile for Catalyst-authenticated users. Authentication identity remains owned by Catalyst Auth.",
+  "creationOrder": 2,
+  "tableScope": "operational",
+  "columns": [
+    { "name": "email", "type": "Email", "maxLength": 254, "mandatory": true, "unique": true },
+    { "name": "display_name", "type": "Var Char", "maxLength": 160, "mandatory": true, "unique": false },
+    { "name": "status", "type": "Var Char", "maxLength": 30, "mandatory": true, "unique": false, "default": "active" },
+    { "name": "role_id", "type": "Var Char", "maxLength": 100, "mandatory": false, "unique": false, "foreignKey": "roles.name" },
+    { "name": "district_id", "type": "Var Char", "maxLength": 100, "mandatory": false, "unique": false },
+    { "name": "station_id", "type": "Var Char", "maxLength": 100, "mandatory": false, "unique": false },
+    { "name": "phone", "type": "Var Char", "maxLength": 30, "mandatory": false, "unique": false },
+    { "name": "last_login_at", "type": "Date Time", "mandatory": false },
+    { "name": "created_at", "type": "Date Time", "mandatory": true },
+    { "name": "created_by", "type": "Var Char", "maxLength": 100, "mandatory": true },
+    { "name": "updated_at", "type": "Date Time", "mandatory": true },
+    { "name": "updated_by", "type": "Var Char", "maxLength": 100, "mandatory": true },
+    { "name": "version", "type": "Integer", "mandatory": true, "default": 1 },
+    { "name": "is_archived", "type": "Boolean", "mandatory": true, "default": false },
+    { "name": "archived_at", "type": "Date Time", "mandatory": false },
+    { "name": "archived_by", "type": "Var Char", "maxLength": 100, "mandatory": false },
+    { "name": "development_only", "type": "Boolean", "mandatory": true, "default": false }
+  ],
+  "relationships": ["roles.name", "user_profiles.user_id", "user_role_assignments.user_id", "jurisdiction_access.user_id"],
+  "searchableFields": ["email", "display_name", "status", "district_id", "station_id"],
+  "indexRecommendations": ["email", "role_id", "district_id", "station_id", "status", "is_archived"],
+  "rolePermissions": {
+    "read": ["Self", "Admin"],
+    "write": ["Admin"],
+    "selfUpdateFields": ["display_name", "phone"]
+  },
+  "archiveBehavior": "Disable and archive users instead of deleting records.",
+  "auditRequirements": "Audit role, status, jurisdiction, and profile-sensitive changes."
+}
+

@@ -1,0 +1,22 @@
+{
+  "table": "saved_queries",
+  "purpose": "Saved query definitions for reports and AI assistant.",
+  "creationOrder": 16,
+  "tableScope": "operational",
+  "columns": [
+    { "name": "query_id", "type": "Var Char", "maxLength": 120, "mandatory": true, "unique": true },
+    { "name": "owner_id", "type": "Var Char", "maxLength": 100, "mandatory": true, "foreignKey": "users.email" },
+    { "name": "name", "type": "Var Char", "maxLength": 180, "mandatory": true },
+    { "name": "query_type", "type": "Var Char", "maxLength": 60, "mandatory": true },
+    { "name": "definition_json", "type": "Text", "mandatory": true },
+    { "name": "created_at", "type": "Date Time", "mandatory": true },
+    { "name": "updated_at", "type": "Date Time", "mandatory": true },
+    { "name": "is_deleted", "type": "Boolean", "mandatory": true, "default": false }
+  ],
+  "relationships": ["users.email"],
+  "searchableFields": ["query_id", "owner_id", "name", "query_type"],
+  "indexRecommendations": ["query_id", "owner_id", "query_type", "is_deleted"],
+  "rolePermissions": { "read": ["Owner", "Admin"], "write": ["Owner", "Admin"] },
+  "archiveBehavior": "Soft delete.",
+  "auditRequirements": "Audit create, share, rename, run, and delete."
+}

@@ -1,9 +1,9 @@
 import { mapGet } from "../_handler";
-import { getMockBoundaries } from "@/lib/crime-map/map-api";
+import { getDatabaseBoundaries } from "@/data/services/map-service";
 
 export async function GET(request: Request) {
-  return mapGet(request, () => ({
+  return mapGet(request, async () => ({
     source: "mock",
-    data: getMockBoundaries(),
+    data: await getDatabaseBoundaries(),
   }));
 }

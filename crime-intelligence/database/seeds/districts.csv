@@ -1,0 +1,7 @@
+district_id,name,status,created_at,created_by,updated_at,updated_by,version,is_deleted
+BENGALURU-CITY,Bengaluru City,active,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false
+MYSURU,Mysuru,active,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false
+BELAGAVI,Belagavi,active,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false
+KALABURAGI,Kalaburagi,active,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false
+MANGALURU,Mangaluru,active,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false
+HUBBALLI-DHARWAD,Hubballi-Dharwad,active,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false

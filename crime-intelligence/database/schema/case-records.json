@@ -1,0 +1,24 @@
+{
+  "table": "case_records",
+  "purpose": "Case lifecycle records linked to incidents.",
+  "creationOrder": 13,
+  "tableScope": "operational",
+  "columns": [
+    { "name": "case_id", "type": "Var Char", "maxLength": 120, "mandatory": true, "unique": true },
+    { "name": "incident_id", "type": "Var Char", "maxLength": 120, "mandatory": true, "foreignKey": "crime_incidents.incident_id" },
+    { "name": "case_status", "type": "Var Char", "maxLength": 60, "mandatory": true },
+    { "name": "assigned_officer_id", "type": "Var Char", "maxLength": 100, "mandatory": false, "foreignKey": "officers.officer_id" },
+    { "name": "created_at", "type": "Date Time", "mandatory": true },
+    { "name": "created_by", "type": "Var Char", "maxLength": 100, "mandatory": true },
+    { "name": "updated_at", "type": "Date Time", "mandatory": true },
+    { "name": "updated_by", "type": "Var Char", "maxLength": 100, "mandatory": true },
+    { "name": "version", "type": "Integer", "mandatory": true, "default": 1 },
+    { "name": "is_deleted", "type": "Boolean", "mandatory": true, "default": false }
+  ],
+  "relationships": ["crime_incidents.incident_id", "officers.officer_id"],
+  "searchableFields": ["case_id", "incident_id", "case_status", "assigned_officer_id"],
+  "indexRecommendations": ["case_id", "incident_id", "case_status", "assigned_officer_id", "is_deleted"],
+  "rolePermissions": { "read": ["Jurisdiction scoped"], "write": ["Admin", "Investigator", "Officer"] },
+  "archiveBehavior": "Soft delete only.",
+  "auditRequirements": "Audit status and assignment changes."
+}

@@ -1,0 +1,25 @@
+# Primary Workflow Test Report
+
+| Workflow | Expected result | Actual result | Steps | Error behavior | Accessibility | Responsive | Status |
+| --- | --- | --- | ---: | --- | --- | --- | --- |
+| Sign in | Public login opens Catalyst sign-in and redirects into the app after session validation. | Auth shell and guarded app routes are present; deployed credential validation remains environment-dependent. | 2 | Redirects preserve target route. | Auth frame has accessible label. | Auth shell is responsive. | Pass with deployment credential verification required |
+| Sign up | Public signup captures required identity fields. | Signup frame and fallback form preserve input and show errors. | 3 | Field errors remain visible. | Inputs have labels. | Responsive card layout. | Pass |
+| Open app | Authenticated user reaches Overview. | AppShell verifies session and renders structured loading state before content. | 1 | Redirects unauthenticated users to login. | Skip link and main landmark present. | Sidebar/drawer behavior present. | Pass |
+| Search records | User searches FIR records with filters. | Records search preserves filters, announces result count, and shows table. | 3 | Retry preserves filters. | Labels, captions, and row links present. | Table scroll is contained. | Pass |
+| Apply and clear filters | Filters update records and can be cleared. | Apply/search and reset paths are present. | 2 | Validation summary remains near controls. | Buttons keyboard-operable. | Filter controls wrap on smaller screens. | Pass |
+| Open a record | FIR link opens detail route. | `/fir-search/[id]` route exists and is linked from results/map. | 1 | Invalid IDs show validation/error states. | Link has descriptive label. | Detail route uses shell. | Pass |
+| Return to result context | Browser back returns to prior route. | Standard browser navigation is preserved; filters are local component state. | 1 | No destructive navigation. | Focus moves to main content on route change. | Shell stable. | Pass |
+| Explore crime map | Map loads incidents, hotspots, controls, and list alternative. | Map canvas, layer status, and incident list are present. | 2 | Map refresh failure keeps current data visible. | Keyboard list alternative present. | Map panels stack with responsive grid. | Pass |
+| Select map feature | Selecting a map item or list item updates detail panel. | Incident list buttons synchronize selected incident. | 1 | Selection status is announced. | Keyboard alternative available. | List remains below map. | Pass |
+| Change map layers | Layer toggles alter visible layers. | Fieldset-based layer toggles are present. | 1 | Layer status remains visible. | Checkboxes have labels. | Controls wrap. | Pass |
+| Open analytics | Analytics pages load from secondary navigation. | Analytics routes exist and are mapped to product area. | 1 | Pages include loading/error states. | Shell landmarks present. | Wide page container used. | Pass |
+| Ask assistant | User submits a question and sees interpreted result. | Prompt, suggestions, retry, and new conversation actions are present. | 2 | Failed question is preserved. | Textarea help and live response region present. | Form wraps. | Pass |
+| Review assistant sources | User sees explanation, limitations, and source notes where implemented. | Response panel shows explanation, limitations, and source note column. | 1 | Insufficient data is stated in response copy. | Region labels present. | Responsive columns collapse. | Pass |
+| Generate report | User configures and previews report. | Preview generation, validation, and status feedback are present. | 3 | Validation focuses report title; retry available. | Inputs are labeled. | Preview scrolls within page. | Pass |
+| Export data | User exports supported PDF/CSV. | Export buttons prevent duplicate submission and show status/toast. | 1 | Export failure preserves settings. | Loading state announced. | Buttons wrap. | Pass |
+| Review alerts | User opens alert routes. | Risk alerts and alert notification routes exist. | 2 | Error states include retry. | Shell semantics present. | Cards stack. | Pass |
+| Role-restricted administration | Admin opens user/role pages. | Admin routes are permission-gated and hidden for non-admin navigation. | 2 | Restricted deep links show access state. | Dialog focus management present. | Dialogs scroll within viewport. | Pass |
+| Sign out | User menu signs out. | Sign-out action calls Catalyst sign-out. | 1 | Session expiry redirects to login. | Menu supports Escape and arrow keys. | Menu remains within viewport. | Pass |
+| Failed request recovery | User sees retry without losing work. | Shared state notices, toasts, and retry patterns are present. | 1 | Sensitive details are hidden. | Status regions announce changes. | Responsive states are contained. | Pass |
+
+Deployment-only checks, including live demo credential validation and browser matrix runs, must be repeated against the production URL before public demonstration.

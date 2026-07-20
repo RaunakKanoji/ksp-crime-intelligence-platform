@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import type {
   CrimeIncidentFeature,
   CrimeIncidentFeatureCollection,
@@ -71,9 +72,13 @@ export function CrimeMapIntelPanel({
               <div><dt className="text-xs uppercase text-slate-400">Address</dt><dd>{selectedIncident.properties.addressText ?? "Area-level location"}</dd></div>
               <div><dt className="text-xs uppercase text-slate-400">Modus operandi summary</dt><dd>{selectedIncident.properties.modusOperandi ?? "Pattern detected from safe incident attributes."}</dd></div>
             </dl>
-            <button type="button" className="mt-4 h-10 w-full rounded-lg border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+            <Link
+              href={`/fir-search/${selectedIncident.properties.id}`}
+              className="mt-4 inline-flex min-h-11 w-full items-center justify-center rounded-lg border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+              aria-label={`Open record ${selectedIncident.properties.firNumber}`}
+            >
               Open case
-            </button>
+            </Link>
           </section>
         ) : selectedHotspot ? (
           <section className="rounded-lg border border-amber-200 bg-amber-50 p-4">

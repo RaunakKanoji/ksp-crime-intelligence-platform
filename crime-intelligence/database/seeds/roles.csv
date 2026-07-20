@@ -1,0 +1,6 @@
+name,description,status,catalyst_role_id,created_at,created_by,updated_at,updated_by,version,is_archived
+Admin,"Full system administration, user management, dataset uploads, and system configuration.",active,,2026-07-11 00:00:00,seed,2026-07-11 00:00:00,seed,1,false
+Investigator,"Detailed crime investigation, suspect and victim profile access, and case intelligence workflows.",active,,2026-07-11 00:00:00,seed,2026-07-11 00:00:00,seed,1,false
+Analyst,"Statewide aggregated analytics, trends analysis, geospatial hotspots, and report building.",active,,2026-07-11 00:00:00,seed,2026-07-11 00:00:00,seed,1,false
+Officer,"Standard officer access for case searching, map viewing, and basic case details.",active,,2026-07-11 00:00:00,seed,2026-07-11 00:00:00,seed,1,false
+Viewer,"Read-only access to standard summaries and permitted public information.",active,,2026-07-11 00:00:00,seed,2026-07-11 00:00:00,seed,1,false

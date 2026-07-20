@@ -1,0 +1,20 @@
+{
+  "table": "chat_messages",
+  "purpose": "AI assistant chat messages and responses.",
+  "creationOrder": 18,
+  "tableScope": "operational",
+  "columns": [
+    { "name": "message_id", "type": "Var Char", "maxLength": 120, "mandatory": true, "unique": true },
+    { "name": "session_id", "type": "Var Char", "maxLength": 120, "mandatory": true, "foreignKey": "chat_sessions.session_id" },
+    { "name": "role", "type": "Var Char", "maxLength": 30, "mandatory": true },
+    { "name": "content", "type": "Text", "mandatory": true },
+    { "name": "created_at", "type": "Date Time", "mandatory": true },
+    { "name": "is_deleted", "type": "Boolean", "mandatory": true, "default": false }
+  ],
+  "relationships": ["chat_sessions.session_id"],
+  "searchableFields": ["message_id", "session_id", "role"],
+  "indexRecommendations": ["message_id", "session_id", "created_at", "is_deleted"],
+  "rolePermissions": { "read": ["Owner", "Admin"], "write": ["Owner", "Admin"] },
+  "archiveBehavior": "Soft delete with parent session.",
+  "auditRequirements": "Audit deletion and retention changes."
+}

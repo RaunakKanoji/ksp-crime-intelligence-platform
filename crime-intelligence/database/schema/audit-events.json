@@ -1,0 +1,30 @@
+{
+  "table": "audit_events",
+  "purpose": "Append-only security and operational audit trail.",
+  "creationOrder": 6,
+  "tableScope": "operational",
+  "columns": [
+    { "name": "actor_id", "type": "Var Char", "maxLength": 100, "mandatory": true, "unique": false, "foreignKey": "users.email" },
+    { "name": "actor_role", "type": "Var Char", "maxLength": 50, "mandatory": false, "unique": false },
+    { "name": "action", "type": "Var Char", "maxLength": 120, "mandatory": true, "unique": false },
+    { "name": "entity_type", "type": "Var Char", "maxLength": 80, "mandatory": true, "unique": false },
+    { "name": "entity_id", "type": "Var Char", "maxLength": 120, "mandatory": false, "unique": false },
+    { "name": "occurred_at", "type": "Date Time", "mandatory": true },
+    { "name": "outcome", "type": "Var Char", "maxLength": 30, "mandatory": true, "unique": false, "default": "success" },
+    { "name": "route", "type": "Var Char", "maxLength": 300, "mandatory": false, "unique": false },
+    { "name": "previous_state_json", "type": "Text", "mandatory": false, "unique": false },
+    { "name": "new_state_json", "type": "Text", "mandatory": false, "unique": false },
+    { "name": "error_code", "type": "Var Char", "maxLength": 80, "mandatory": false, "unique": false },
+    { "name": "correlation_id", "type": "Var Char", "maxLength": 120, "mandatory": false, "unique": false }
+  ],
+  "relationships": ["users.email"],
+  "searchableFields": ["actor_id", "actor_role", "action", "entity_type", "entity_id", "outcome", "error_code"],
+  "indexRecommendations": ["actor_id", "action", "entity_type", "entity_id", "occurred_at", "outcome"],
+  "rolePermissions": {
+    "read": ["Admin"],
+    "write": ["Server only"]
+  },
+  "archiveBehavior": "Append-only; retention and archival must be policy-driven.",
+  "auditRequirements": "Do not audit audit reads into this same workflow unless configured to avoid recursion."
+}
+

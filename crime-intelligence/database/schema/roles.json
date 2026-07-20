@@ -1,0 +1,30 @@
+{
+  "table": "roles",
+  "purpose": "Application role definitions mapped from Catalyst Authentication roles and app permissions.",
+  "creationOrder": 1,
+  "tableScope": "reference",
+  "columns": [
+    { "name": "name", "type": "Var Char", "maxLength": 50, "mandatory": true, "unique": true },
+    { "name": "description", "type": "Var Char", "maxLength": 500, "mandatory": true, "unique": false },
+    { "name": "status", "type": "Var Char", "maxLength": 30, "mandatory": true, "unique": false, "default": "active" },
+    { "name": "catalyst_role_id", "type": "Var Char", "maxLength": 100, "mandatory": false, "unique": true },
+    { "name": "created_at", "type": "Date Time", "mandatory": true },
+    { "name": "created_by", "type": "Var Char", "maxLength": 100, "mandatory": true },
+    { "name": "updated_at", "type": "Date Time", "mandatory": true },
+    { "name": "updated_by", "type": "Var Char", "maxLength": 100, "mandatory": true },
+    { "name": "version", "type": "Integer", "mandatory": true, "default": 1 },
+    { "name": "is_archived", "type": "Boolean", "mandatory": true, "default": false },
+    { "name": "archived_at", "type": "Date Time", "mandatory": false },
+    { "name": "archived_by", "type": "Var Char", "maxLength": 100, "mandatory": false }
+  ],
+  "relationships": [],
+  "searchableFields": ["name", "description", "status"],
+  "indexRecommendations": ["name", "status", "is_archived"],
+  "rolePermissions": {
+    "read": ["Admin", "Investigator", "Analyst", "Officer", "Viewer"],
+    "write": ["Admin"]
+  },
+  "archiveBehavior": "Archive only after all active assignments are migrated.",
+  "auditRequirements": "Audit create, update, archive, and Catalyst role mapping changes."
+}
+

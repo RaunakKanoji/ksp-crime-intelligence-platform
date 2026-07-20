@@ -1,0 +1,7 @@
+access_key,user_id,organization_id,district_id,station_id,access_level,status,created_at,created_by,updated_at,updated_by,version,is_archived
+dev.admin@ksp.local:statewide,dev.admin@ksp.local,KSP,,,statewide,active,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false
+dev.investigator@ksp.local:BENGALURU-URBAN:CENTRAL-STATION,dev.investigator@ksp.local,KSP,BENGALURU-URBAN,CENTRAL-STATION,station,active,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false
+dev.analyst@ksp.local:statewide,dev.analyst@ksp.local,KSP,,,statewide,active,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false
+dev.officer@ksp.local:BENGALURU-URBAN:CENTRAL-STATION,dev.officer@ksp.local,KSP,BENGALURU-URBAN,CENTRAL-STATION,station,active,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false
+dev.viewer@ksp.local:read-only,dev.viewer@ksp.local,KSP,,,read_only,active,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false
+

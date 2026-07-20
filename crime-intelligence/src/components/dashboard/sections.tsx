@@ -248,8 +248,8 @@ export function DistrictOverview({ districts }: { districts: DistrictStat[] }) {
 // ---- Map preview (schematic, no map library) --------------------------
 export function MapPreview({ hotspots }: { hotspots: MapHotspot[] }) {
   return (
-    <section className={card}>
-      <div className="flex items-center justify-between">
+    <section className={`${card} flex h-full min-h-[28rem] flex-col`}>
+      <div className="flex shrink-0 items-center justify-between">
         <div>
           <h2 className="text-lg font-semibold tracking-tight">Hotspot Map</h2>
           <p className="text-sm text-slate-600">Schematic preview of flagged districts</p>
@@ -258,8 +258,14 @@ export function MapPreview({ hotspots }: { hotspots: MapHotspot[] }) {
           Open crime map
         </Link>
       </div>
-      <div className="relative mt-4 aspect-[16/10] w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
-        <svg viewBox="0 0 100 62" className="h-full w-full" role="img" aria-label="Schematic hotspot preview">
+      <div className="relative mt-4 min-h-[22rem] flex-1 overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
+        <svg
+          viewBox="0 0 100 62"
+          preserveAspectRatio="xMidYMid meet"
+          className="h-full w-full"
+          role="img"
+          aria-label="Schematic hotspot preview"
+        >
           <rect x="0" y="0" width="100" height="62" className="fill-slate-100" />
           <path d="M14 12 L70 8 L86 26 L74 52 L30 56 L10 34 Z" className="fill-slate-200 stroke-slate-300" strokeWidth={0.5} />
           {hotspots.map((h) => (

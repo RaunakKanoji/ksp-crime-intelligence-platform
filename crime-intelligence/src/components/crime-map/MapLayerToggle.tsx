@@ -18,11 +18,12 @@ export function MapLayerToggle({
   onChange: (layers: CrimeMapLayerState) => void;
 }) {
   return (
-    <div className="flex flex-wrap gap-2" aria-label="Map layer toggles">
+    <fieldset className="flex flex-wrap gap-2">
+      <legend className="sr-only">Map layers</legend>
       {(Object.keys(layers) as Array<keyof CrimeMapLayerState>).map((key) => (
         <label
           key={key}
-          className="inline-flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700"
+          className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700"
         >
           <input
             type="checkbox"
@@ -33,6 +34,6 @@ export function MapLayerToggle({
           {labels[key]}
         </label>
       ))}
-    </div>
+    </fieldset>
   );
 }

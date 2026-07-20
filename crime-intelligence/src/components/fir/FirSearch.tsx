@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { AppShell, useAppSession } from "@/components/layout/AppShell";
+import { Button, RefreshingIndicator, StateNotice } from "@/components/ui";
 import { CATEGORIES, DISTRICTS } from "@/lib/dashboard/types";
 import { STATIONS } from "@/lib/dashboard/summary";
 import { hasPermission } from "@/lib/permissions";
@@ -19,7 +20,7 @@ import {
 
 const card = "rounded-2xl border border-slate-200 bg-white p-6 shadow-sm";
 
-type LoadState = "loading" | "ready" | "empty" | "error" | "validation-error";
+type LoadState = "loading" | "refreshing" | "ready" | "empty" | "error" | "validation-error";
 
 function Field({
   id,
@@ -62,15 +63,11 @@ function FirSearchError({ onRetry }: { onRetry: () => void }) {
     <section className={`${card} p-10 text-center`}>
       <h2 className="text-lg font-semibold tracking-tight">Unable to load FIR records</h2>
       <p className="mx-auto mt-2 max-w-md text-sm text-slate-600">
-        Something went wrong while preparing the FIR search results. Please try again.
+        Could not load FIR search results. Your filters are still applied. Try again.
       </p>
-      <button
-        type="button"
-        onClick={onRetry}
-        className="mt-6 inline-flex h-10 items-center justify-center rounded-lg border border-slate-200 px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-      >
+      <Button type="button" onClick={onRetry} className="mt-6">
         Retry
-      </button>
+      </Button>
     </section>
   );
 }
@@ -281,20 +278,22 @@ function FirFilters({
         </div>
 
         <div className="flex flex-wrap items-center justify-end gap-2">
-          <button
+          <Button
             type="button"
             onClick={onReset}
-            className="inline-flex h-10 items-center justify-center rounded-lg border border-slate-200 px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+            variant="secondary"
+            disabled={loading}
           >
             Reset filters
-          </button>
-          <button
+          </Button>
+          <Button
             type="submit"
-            disabled={loading}
-            className="inline-flex h-10 items-center justify-center rounded-lg bg-teal-700 px-4 text-sm font-semibold text-white transition hover:bg-teal-800 disabled:cursor-not-allowed disabled:bg-slate-300"
+            variant="primary"
+            loading={loading}
+            loadingLabel="Searching..."
           >
-            {loading ? "Searching..." : "Search FIRs"}
-          </button>
+            Search records
+          </Button>
         </div>
       </form>
     </section>
@@ -305,10 +304,12 @@ function FirResults({
   data,
   onPage,
   canOpenDetail,
+  refreshing,
 }: {
   data: FirSearchResponse;
   onPage: (page: number) => void;
   canOpenDetail: boolean;
+  refreshing?: boolean;
 }) {
   return (
     <section className={`${card} overflow-hidden p-0`}>
@@ -316,12 +317,13 @@ function FirResults({
         <div>
           <h2 className="text-lg font-semibold tracking-tight">FIR Records</h2>
           <p className="text-sm text-slate-600">
-            {data.total.toLocaleString("en-IN")} matching sample records · Page {data.page} of {data.totalPages}
+            {data.total.toLocaleString("en-IN")} matching FIR records · Page {data.page} of {data.totalPages}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <span className="rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-800">
-            Sample data
+          {refreshing && <RefreshingIndicator label="Refreshing results" />}
+          <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-800">
+            Catalyst Data Store
           </span>
           {!data.redaction.pii && (
             <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-semibold text-slate-600">
@@ -338,6 +340,9 @@ function FirResults({
 
       <div className="mt-4 overflow-x-auto">
         <table className="w-full min-w-[980px] text-sm">
+          <caption className="sr-only">
+            FIR search results with district, station, incident date, category, legal section, people fields, and case status.
+          </caption>
           <thead>
             <tr className="border-y border-slate-200 bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
               <th scope="col" className="px-6 py-2.5 font-medium">FIR number</th>
@@ -358,6 +363,7 @@ function FirResults({
                     <Link
                       href={`/fir-search/${row.id}`}
                       className="font-semibold text-teal-800 underline-offset-2 hover:underline"
+                      aria-label={`Open FIR record ${row.firNumber}`}
                     >
                       {row.firNumber}
                     </Link>
@@ -406,22 +412,24 @@ function FirResults({
       <div className="flex flex-col gap-3 border-t border-slate-100 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-xs text-slate-500">{data.auditNote}</p>
         <div className="flex gap-2">
-          <button
+          <Button
             type="button"
             disabled={data.page <= 1}
             onClick={() => onPage(data.page - 1)}
-            className="h-9 rounded-lg border border-slate-200 px-3 text-sm font-medium text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:text-slate-300"
+            variant="secondary"
+            className="h-9 px-3"
           >
             Previous
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             disabled={data.page >= data.totalPages}
             onClick={() => onPage(data.page + 1)}
-            className="h-9 rounded-lg border border-slate-200 px-3 text-sm font-medium text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:text-slate-300"
+            variant="secondary"
+            className="h-9 px-3"
           >
             Next
-          </button>
+          </Button>
         </div>
       </div>
     </section>
@@ -433,18 +441,36 @@ function EmptyResults({ onReset }: { onReset: () => void }) {
     <section className={`${card} p-10 text-center`}>
       <h2 className="text-lg font-semibold tracking-tight">No matching FIR records</h2>
       <p className="mx-auto mt-2 max-w-md text-sm text-slate-600">
-        No sample FIR records match the active filters. Try a broader date range, district, station, category, act,
-        section, or case status.
+        No FIR records match the active filters. Try a broader date range, district, station, category, act, section,
+        or case status.
       </p>
-      <button
+      <Button
         type="button"
         onClick={onReset}
-        className="mt-6 inline-flex h-10 items-center justify-center rounded-lg bg-teal-700 px-4 text-sm font-semibold text-white transition hover:bg-teal-800"
+        variant="primary"
+        className="mt-6"
       >
         Reset filters
-      </button>
+      </Button>
     </section>
   );
+}
+
+function activeFilterSummary(filters: FirSearchFilters) {
+  const values = [
+    filters.firNumber && `FIR ${filters.firNumber}`,
+    filters.district !== "all" && filters.district,
+    filters.policeStation !== "all" && filters.policeStation,
+    filters.caseStatus !== "all" && filters.caseStatus,
+    filters.dateFrom && `from ${filters.dateFrom}`,
+    filters.dateTo && `to ${filters.dateTo}`,
+    filters.crimeCategory !== "all" && filters.crimeCategory,
+    filters.act !== "all" && filters.act,
+    filters.section !== "all" && `Section ${filters.section}`,
+    filters.accusedName && "accused name",
+    filters.victimName && "victim name",
+  ].filter(Boolean);
+  return values.length ? values.join(" · ") : "No filters applied";
 }
 
 function FirSearchContent() {
@@ -455,6 +481,7 @@ function FirSearchContent() {
   const [data, setData] = useState<FirSearchResponse | null>(null);
   const [validationErrors, setValidationErrors] = useState<FirValidationError[]>([]);
   const requestId = useRef(0);
+  const dataRef = useRef<FirSearchResponse | null>(null);
 
   const canViewPii = hasPermission(activeRole, "data:view-pii");
   const canOpenDetail = hasPermission(activeRole, "page:fir-detail");
@@ -467,11 +494,12 @@ function FirSearchContent() {
   const load = useCallback(
     async (activeFilters: FirSearchFilters, activePage: number) => {
       const current = ++requestId.current;
-      setState("loading");
+      setState((currentState) => (dataRef.current && currentState !== "empty" ? "refreshing" : "loading"));
       setValidationErrors([]);
       try {
         const result = await searchFirs({ filters: activeFilters, page: activePage, pageSize: 8 }, activeRole);
         if (current !== requestId.current) return;
+        dataRef.current = result;
         setData(result);
         setState(result.total === 0 ? "empty" : "ready");
       } catch (err) {
@@ -505,11 +533,11 @@ function FirSearchContent() {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-800">
-          Sample data
+        <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-800">
+          Catalyst Data Store
         </span>
         <span className="text-xs text-slate-500">
-          FIR search is using permission-filtered demonstration records until Catalyst Data Store is connected.
+          FIR search reads records through the deployed Advanced I/O function.
         </span>
       </div>
 
@@ -522,10 +550,18 @@ function FirSearchContent() {
         onSubmit={submit}
         onReset={reset}
         canViewPii={canViewPii}
-        loading={state === "loading"}
+        loading={state === "loading" || state === "refreshing"}
       />
 
       {state === "validation-error" && <ValidationAlert errors={validationErrors} />}
+
+      {(state === "ready" || state === "refreshing" || state === "empty") && (
+        <StateNotice
+          tone={state === "refreshing" ? "loading" : data?.total ? "info" : "empty"}
+          title={state === "refreshing" ? "Refreshing search results." : data?.total ? `${data.total.toLocaleString("en-IN")} records found.` : "No records match the current filters."}
+          description={`Current filters: ${activeFilterSummary(filters)}.`}
+        />
+      )}
 
       {state === "loading" ? (
         <FirSearchSkeleton />
@@ -536,7 +572,7 @@ function FirSearchContent() {
       ) : state === "empty" || !data ? (
         <EmptyResults onReset={reset} />
       ) : (
-        <FirResults data={data} onPage={setPage} canOpenDetail={canOpenDetail} />
+        <FirResults data={data} onPage={setPage} canOpenDetail={canOpenDetail} refreshing={state === "refreshing"} />
       )}
     </div>
   );

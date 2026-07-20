@@ -1,0 +1,6 @@
+category_id,name,severity_default,status,created_at,created_by,updated_at,updated_by,version,is_deleted
+VEHICLE-THEFT,Vehicle Theft,medium,active,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false
+BURGLARY,Burglary,high,active,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false
+CYBER-FRAUD,Cyber Fraud,high,active,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false
+ASSAULT,Assault,high,active,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false
+NARCOTICS,Narcotics,critical,active,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false

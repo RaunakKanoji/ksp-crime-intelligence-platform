@@ -1,0 +1,7 @@
+email,display_name,status,role_id,district_id,station_id,phone,last_login_at,created_at,created_by,updated_at,updated_by,version,is_archived,development_only
+dev.admin@ksp.local,Development Admin,active,Admin,,,9999990001,,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false,true
+dev.investigator@ksp.local,Development Investigator,active,Investigator,BENGALURU-URBAN,CENTRAL-STATION,9999990002,,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false,true
+dev.analyst@ksp.local,Development Analyst,active,Analyst,,,9999990003,,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false,true
+dev.officer@ksp.local,Development Officer,active,Officer,BENGALURU-URBAN,CENTRAL-STATION,9999990004,,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false,true
+dev.viewer@ksp.local,Development Viewer,active,Viewer,,,9999990005,,2026-07-11T00:00:00.000Z,seed,2026-07-11T00:00:00.000Z,seed,1,false,true
+

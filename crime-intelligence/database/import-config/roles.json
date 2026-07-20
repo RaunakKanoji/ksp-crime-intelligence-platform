@@ -1,0 +1,6 @@
+{
+  "table_identifier": "roles",
+  "operation": "upsert",
+  "find_by": "name"
+}
+

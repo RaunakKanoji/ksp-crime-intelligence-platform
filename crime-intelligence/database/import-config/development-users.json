@@ -1,0 +1,6 @@
+{
+  "table_identifier": "users",
+  "operation": "upsert",
+  "find_by": "email"
+}
+

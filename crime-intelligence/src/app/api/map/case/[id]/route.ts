@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { hasPermission } from "@/lib/permissions";
 import { parseCrimeMapRequest } from "../../_handler";
+import { getDataProvider } from "@/data/mock/config";
+import { getDatabaseMapCase } from "@/data/services/map-service";
 import { MOCK_CRIME_INCIDENTS } from "@/lib/crime-map/mock-crime-data";
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
@@ -9,6 +11,10 @@ export async function GET(request: Request, { params }: { params: { id: string }
 
   if (!hasPermission(role, "page:map")) {
     return NextResponse.json({ error: "Restricted crime map access." }, { status: 403 });
+  }
+  if (getDataProvider() === "mock" && id.startsWith("INC-MOCK-")) {
+    const data = await getDatabaseMapCase(id);
+    return NextResponse.json({ source: "mock", data }, { status: data ? 200 : 404 });
   }
   if (!/^CM-\d{3}$/.test(id)) {
     return NextResponse.json({ error: "Invalid case id." }, { status: 400 });

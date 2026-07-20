@@ -1,9 +1,12 @@
 // FIR Search data service (feature 008).
 //
-// Catalyst Data Store is not connected yet, so this service returns clearly
-// labeled SAMPLE records. Validation, filtering, pagination, and role-based
-// redaction happen here so the UI only receives authorized fields.
+// FIR Search data service (feature 008).
+//
+// Reads FIR records through the Catalyst Advanced I/O function. Validation,
+// filtering, pagination, and role-based redaction happen here so the UI only
+// receives authorized fields.
 
+import { getAllFirs, type FirRecord } from "@/lib/api/firs";
 import { CATEGORIES, DISTRICTS } from "@/lib/dashboard/types";
 import { STATIONS } from "@/lib/dashboard/summary";
 import { hasPermission, type UserRole } from "@/lib/permissions";
@@ -330,6 +333,27 @@ function contains(haystack: string, needle: string): boolean {
   return haystack.toLowerCase().includes(needle.toLowerCase());
 }
 
+function toRawFirRecord(record: FirRecord): RawFirRecord {
+  const crimeCategory = record.crimeCategory || record.crimeType || "Property";
+  const caseStatus = record.caseStatus || "Open";
+  return {
+    id: record.id,
+    firNumber: record.firNumber,
+    district: record.district as District,
+    policeStation: record.policeStation || "",
+    incidentDate: record.firDate,
+    reportedDate: record.reportedDate || record.firDate,
+    crimeCategory: crimeCategory as Category,
+    act: (record.act || "IPC") as Act,
+    section: (record.section || "379") as Section,
+    caseStatus: caseStatus as CaseStatus,
+    accusedName: record.accused,
+    victimName: record.victim,
+    incidentSummary: record.description,
+    sensitiveNote: record.sensitiveNote || "",
+  };
+}
+
 function matchesFilters(record: RawFirRecord, filters: FirSearchFilters): boolean {
   if (filters.firNumber && !contains(record.firNumber, filters.firNumber)) return false;
   if (filters.district !== "all" && record.district !== filters.district) return false;
@@ -377,9 +401,8 @@ export async function searchFirs(
   const pageSize = FIR_PAGE_SIZE;
   const page = Number.isInteger(request.page) && request.page > 0 ? request.page : 1;
 
-  await new Promise((resolve) => setTimeout(resolve, 250));
-
-  const filtered = SAMPLE_FIR_RECORDS.filter((record) => matchesFilters(record, filters)).sort((a, b) =>
+  const records = (await getAllFirs()).map(toRawFirRecord);
+  const filtered = records.filter((record) => matchesFilters(record, filters)).sort((a, b) =>
     b.incidentDate.localeCompare(a.incidentDate)
   );
   const total = filtered.length;
@@ -389,7 +412,7 @@ export async function searchFirs(
   const rows = filtered.slice(start, start + pageSize).map((record) => redact(record, role));
 
   return {
-    isSampleData: true,
+    isSampleData: false,
     generatedAt: new Date().toISOString(),
     filters,
     rows,
@@ -402,6 +425,6 @@ export async function searchFirs(
       investigationNotes: hasPermission(role, "data:view-investigation-notes"),
     },
     auditNote:
-      "Audit integration is pending feature 035. FIR search criteria and sensitive-result views should be logged in Catalyst Data Store when audit logs are active.",
+      "FIR records are loaded through the Catalyst Advanced I/O function. Sensitive-result views should be logged to audit_events as feature-specific audit wiring is completed.",
   };
 }

@@ -1,0 +1,22 @@
+{
+  "table": "reports",
+  "purpose": "Generated report metadata and export history.",
+  "creationOrder": 15,
+  "tableScope": "operational",
+  "columns": [
+    { "name": "report_id", "type": "Var Char", "maxLength": 120, "mandatory": true, "unique": true },
+    { "name": "title", "type": "Var Char", "maxLength": 180, "mandatory": true },
+    { "name": "created_by", "type": "Var Char", "maxLength": 100, "mandatory": true, "foreignKey": "users.email" },
+    { "name": "created_at", "type": "Date Time", "mandatory": true },
+    { "name": "format", "type": "Var Char", "maxLength": 30, "mandatory": true },
+    { "name": "status", "type": "Var Char", "maxLength": 30, "mandatory": true },
+    { "name": "filters_json", "type": "Text", "mandatory": false },
+    { "name": "is_deleted", "type": "Boolean", "mandatory": true, "default": false }
+  ],
+  "relationships": ["users.email"],
+  "searchableFields": ["report_id", "title", "created_by", "format", "status"],
+  "indexRecommendations": ["report_id", "created_by", "created_at", "status"],
+  "rolePermissions": { "read": ["Owner", "Admin"], "write": ["Admin", "Investigator", "Analyst"] },
+  "archiveBehavior": "Soft delete metadata; file retention follows policy.",
+  "auditRequirements": "Audit every generated or exported report."
+}

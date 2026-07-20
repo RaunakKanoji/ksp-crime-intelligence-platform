@@ -56,7 +56,11 @@ export function CrimeMapToolbar({
         </div>
 
         <div className="grid gap-2 md:grid-cols-[minmax(14rem,1fr)_auto_auto]">
+          <label htmlFor="map-search" className="sr-only">
+            Search FIR, area, station, or crime type
+          </label>
           <input
+            id="map-search"
             value={search}
             onChange={(event) => onSearchChange(event.target.value)}
             onKeyDown={(event) => {
@@ -64,22 +68,25 @@ export function CrimeMapToolbar({
             }}
             className={inputClass}
             placeholder="Search FIR, area, station, crime type"
-            aria-label="Search map cases"
           />
           <button
             type="button"
             onClick={onSearch}
-            className="h-10 rounded-lg bg-teal-700 px-4 text-sm font-semibold text-white hover:bg-teal-800"
+            className="min-h-11 rounded-lg bg-teal-700 px-4 text-sm font-semibold text-white hover:bg-teal-800"
           >
             Search
           </button>
           <button
             type="button"
             disabled
-            className="h-10 rounded-lg border border-slate-200 px-4 text-sm font-semibold text-slate-400"
+            aria-describedby="map-export-disabled"
+            className="min-h-11 rounded-lg border border-slate-200 px-4 text-sm font-semibold text-slate-400"
           >
             Export
           </button>
+          <span id="map-export-disabled" className="sr-only">
+            Map export is unavailable in this build.
+          </span>
         </div>
       </div>
 
@@ -97,6 +104,7 @@ export function CrimeMapToolbar({
                 })
               }
               className="h-9 rounded-lg border border-slate-200 px-3 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+              aria-label={`Set map date range to last ${range.days} days`}
             >
               {range.label}
             </button>

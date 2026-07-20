@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState } from "react";
 import { AppShell, useAppSession } from "@/components/layout/AppShell";
+import { Button, StateNotice, useToast } from "@/components/ui";
 import { EXAMPLE_QUERIES, MAX_QUERY_LENGTH, type NlqResponse } from "@/lib/ai/types";
 
 const card = "rounded-2xl border border-slate-200 bg-white p-6 shadow-sm";
@@ -52,20 +53,19 @@ function EmptyState() {
   );
 }
 
-function ErrorState({ onRetry }: { onRetry: () => void }) {
+function ErrorState({ question, onRetry }: { question: string; onRetry: () => void }) {
   return (
     <section className={`${card} p-10 text-center`}>
       <h2 className="text-lg font-semibold tracking-tight">Unable to run query</h2>
       <p className="mx-auto mt-2 max-w-md text-sm text-slate-600">
-        Something went wrong while preparing the AI query response. Please try again.
+        Could not prepare an assistant response. Your question is still available. Try again.
       </p>
-      <button
-        type="button"
-        onClick={onRetry}
-        className="mt-6 inline-flex h-10 items-center justify-center rounded-lg border border-slate-200 px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-      >
-        Retry
-      </button>
+      <p className="mx-auto mt-4 max-w-md rounded-lg border border-slate-200 bg-slate-50 p-3 text-left text-sm text-slate-700">
+        {question}
+      </p>
+      <Button type="button" onClick={onRetry} className="mt-6">
+        Retry query
+      </Button>
     </section>
   );
 }
@@ -75,9 +75,9 @@ function ResponsePanel({ response }: { response: NlqResponse }) {
   const tone = response.status === "ok" ? "teal" : response.status === "refused" ? "red" : "amber";
 
   return (
-    <div className="grid gap-6 lg:grid-cols-3">
+    <div className="grid gap-6 lg:grid-cols-3" role="region" aria-label="Assistant response" aria-live="polite">
       <div className="space-y-6 lg:col-span-2">
-        <section className={card}>
+        <section className={card} aria-labelledby="assistant-interpretation-title">
           <div className="flex flex-wrap items-center gap-2">
             <StatusBadge label={response.status.replace("-", " ")} tone={tone} />
             {response.confidence && <StatusBadge label={`${response.confidence} confidence`} tone="slate" />}
@@ -85,7 +85,7 @@ function ResponsePanel({ response }: { response: NlqResponse }) {
               <StatusBadge label={`${response.nlpProvider} NLP`} tone={response.nlpProvider === "gemini" ? "teal" : "slate"} />
             )}
           </div>
-          <h2 className="mt-4 text-lg font-semibold tracking-tight">Interpreted Query</h2>
+          <h2 id="assistant-interpretation-title" className="mt-4 text-lg font-semibold tracking-tight">Interpreted Query</h2>
           {response.message && <p className="mt-2 text-sm text-slate-700">{response.message}</p>}
           {response.interpretation && (
             <>
@@ -114,9 +114,9 @@ function ResponsePanel({ response }: { response: NlqResponse }) {
           )}
         </section>
 
-        <section className={`${card} overflow-hidden p-0`}>
+        <section className={`${card} overflow-hidden p-0`} aria-labelledby="assistant-results-title">
           <div className="px-6 pt-6">
-            <h2 className="text-lg font-semibold tracking-tight">{response.resultTitle ?? "Results"}</h2>
+            <h2 id="assistant-results-title" className="text-lg font-semibold tracking-tight">{response.resultTitle ?? "Results"}</h2>
             <p className="text-sm text-slate-600">Authorized, grounded output only</p>
           </div>
           {response.rows && response.rows.length > 0 ? (
@@ -189,10 +189,12 @@ function ResponsePanel({ response }: { response: NlqResponse }) {
 
 function NaturalLanguageQueryContent() {
   const { activeRole } = useAppSession();
+  const { notify } = useToast();
   const [prompt, setPrompt] = useState<string>(EXAMPLE_QUERIES[0]);
   const [state, setState] = useState<QueryState>("idle");
   const [response, setResponse] = useState<NlqResponse | null>(null);
   const [clientError, setClientError] = useState<string | null>(null);
+  const [lastSubmittedPrompt, setLastSubmittedPrompt] = useState("");
   const requestId = useRef(0);
 
   const submit = useCallback(
@@ -210,24 +212,45 @@ function NaturalLanguageQueryContent() {
         return;
       }
 
+      setLastSubmittedPrompt(cleaned);
       setState("loading");
       try {
         const result = await runAiQuery(cleaned, activeRole);
         if (current !== requestId.current) return;
         setResponse(result);
         setState("ready");
+        notify({
+          tone: result.status === "ok" ? "success" : "warning",
+          title: result.status === "ok" ? "Assistant response ready." : "Assistant response needs review.",
+          description: "Sources and limitations are shown with the result.",
+        });
       } catch (err) {
         if (current !== requestId.current) return;
         console.error("Natural language query failed:", err);
         setState("error");
+        notify({
+          tone: "danger",
+          title: "Assistant query failed.",
+          description: "Your question was preserved. Try again.",
+          persistent: true,
+        });
       }
     },
-    [activeRole, prompt]
+    [activeRole, notify, prompt]
   );
 
   const runExample = (example: string) => {
+    if (state === "loading") return;
     setPrompt(example);
     void submit(example);
+  };
+
+  const startNewConversation = () => {
+    setPrompt("");
+    setResponse(null);
+    setClientError(null);
+    setLastSubmittedPrompt("");
+    setState("idle");
   };
 
   return (
@@ -252,7 +275,9 @@ function NaturalLanguageQueryContent() {
               Query input
             </label>
             <p className="mt-1 text-sm text-slate-600">
+              <span id="nlq-prompt-help">
               Ask for aggregate counts, rankings, trends, or permission-safe intelligence indicators.
+              </span>
             </p>
             <textarea
               id="nlq-prompt"
@@ -262,8 +287,10 @@ function NaturalLanguageQueryContent() {
               rows={4}
               className="mt-3 w-full resize-y rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-teal-600 focus:ring-2 focus:ring-teal-600/10"
               placeholder="Show theft cases in Bengaluru in the last 6 months."
+              aria-describedby="nlq-prompt-help nlq-prompt-count"
+              aria-invalid={clientError ? true : undefined}
             />
-            <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
+            <div id="nlq-prompt-count" className="mt-2 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
               <span>{prompt.length}/{MAX_QUERY_LENGTH} characters</span>
               {clientError && <span className="font-medium text-red-600">{clientError}</span>}
             </div>
@@ -275,6 +302,7 @@ function NaturalLanguageQueryContent() {
                 key={example}
                 type="button"
                 onClick={() => runExample(example)}
+                disabled={state === "loading"}
                 className="rounded-lg border border-slate-200 px-3 py-2 text-left text-xs font-medium text-slate-600 transition hover:bg-slate-50"
               >
                 {example}
@@ -283,21 +311,36 @@ function NaturalLanguageQueryContent() {
           </div>
 
           <div className="flex justify-end">
-            <button
+            <div className="flex flex-wrap justify-end gap-2">
+            {response && (
+              <Button type="button" variant="secondary" onClick={startNewConversation} disabled={state === "loading"}>
+                New conversation
+              </Button>
+            )}
+            <Button
               type="submit"
-              disabled={state === "loading"}
-              className="inline-flex h-10 items-center justify-center rounded-lg bg-teal-700 px-4 text-sm font-semibold text-white transition hover:bg-teal-800 disabled:cursor-not-allowed disabled:bg-slate-300"
+              variant="primary"
+              loading={state === "loading"}
+              loadingLabel="Processing..."
             >
-              {state === "loading" ? "Running query..." : "Run query"}
-            </button>
+              Run query
+            </Button>
+            </div>
           </div>
         </form>
       </section>
 
       {state === "loading" ? (
-        <QuerySkeleton />
+        <>
+          <StateNotice
+            tone="loading"
+            title="Assistant is processing your question."
+            description="The question remains editable after the response returns or if the request fails."
+          />
+          <QuerySkeleton />
+        </>
       ) : state === "error" ? (
-        <ErrorState onRetry={() => void submit()} />
+        <ErrorState question={lastSubmittedPrompt || prompt} onRetry={() => void submit(lastSubmittedPrompt || prompt)} />
       ) : response ? (
         <ResponsePanel response={response} />
       ) : (
