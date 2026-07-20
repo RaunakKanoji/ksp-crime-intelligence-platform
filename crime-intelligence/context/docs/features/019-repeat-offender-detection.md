@@ -158,4 +158,9 @@ Current crime analysis workflows can be fragmented, manual, and dependent on spr
 - Keep algorithm/AI logic explainable and separately testable.
 
 ## 20. Status
-Initial status: Not Started.
+Status: Done (2026-07-09).
+
+Implemented at `/people/repeat-offenders` with an authenticated, role-gated API and
+typed service. Until Catalyst data and feature 020 are active, the service uses
+clearly labeled sample records and deterministic, separately testable identity
+signals. Audit persistence remains pending feature 035.
