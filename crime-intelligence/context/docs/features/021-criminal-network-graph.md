@@ -147,4 +147,11 @@ Current crime analysis workflows can be fragmented, manual, and dependent on spr
 - Update `docs/progress-tracker.md` after meaningful changes.
 
 ## 20. Status
-Initial status: Not Started.
+Status: Done (2026-07-09).
+
+Implemented at `/intelligence/network-graph` with an authenticated, role-gated API,
+typed graph models, and a dependency-free responsive SVG visualization. The server
+applies filtering, a 5–100 node performance limit, and accused-label redaction
+before returning graph data. Until Catalyst relationship tables are active, the
+graph uses clearly labeled sample relationships derived from features 017, 019,
+and 020. Audit persistence remains pending feature 035.
