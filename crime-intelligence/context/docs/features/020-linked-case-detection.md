@@ -160,4 +160,11 @@ Current crime analysis workflows can be fragmented, manual, and dependent on spr
 - Keep algorithm/AI logic explainable and separately testable.
 
 ## 20. Status
-Initial status: Not Started.
+Status: Done (2026-07-09).
+
+Implemented at `/intelligence/linked-cases` with an authenticated, role-gated API
+and typed, deterministic scoring service. Until Catalyst data and feature 022 are
+active, the service uses clearly labeled sample cases and structured MO attributes.
+Phone, accused, and associate signals are omitted server-side when the active role
+lacks the applicable sensitive-data permission. Audit persistence remains pending
+feature 035.
