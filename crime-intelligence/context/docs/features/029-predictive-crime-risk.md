@@ -158,4 +158,14 @@ Current crime analysis workflows can be fragmented, manual, and dependent on spr
 - Keep algorithm/AI logic explainable and separately testable.
 
 ## 20. Status
-Initial status: Not Started.
+Status: Done.
+
+Implemented on 2026-07-09 as a focused Decision Support feature at `/decision-support/predictive-risk`, backed by `/api/intelligence/predictive-crime-risk`.
+
+Implementation decisions:
+- Uses an explainable deterministic scoring service over permission-filtered sample incident aggregates because a connected Catalyst Data Store / AI orchestration layer is not available in this workspace.
+- Supports historical 30-day trend inputs, police-station location features, derived time-window features, category-specific risk, prediction horizon, and minimum confidence filtering.
+- Returns scoring signals, source fields, formula, confidence, limitations, no-deterministic-claim language, bias warning, and mandatory human-review warning.
+- Uses generalized district/station locations only and does not expose exact sensitive addresses or raw sensitive data.
+- Adds `page:predictive-crime-risk` permission for Admin, Investigator, and Analyst roles.
+- Audit persistence remains pending feature 035; the API returns an audit note describing required Catalyst Data Store logging once audit logs are active.
