@@ -149,4 +149,11 @@ Current crime analysis workflows can be fragmented, manual, and dependent on spr
 - Update `docs/progress-tracker.md` after meaningful changes.
 
 ## 20. Status
-Initial status: Not Started.
+Status: Done (2026-07-09).
+
+Implemented at `/cases/status-tracking` with an authenticated, role-gated,
+paginated and sortable API plus typed lifecycle models. The service validates all
+filters server-side and removes assigned-officer, timeline-recorder, and internal
+update details for roles without investigation-note permission. Until Catalyst
+case-lifecycle tables are active, the page uses clearly labeled sample records.
+Audit persistence remains pending feature 035.
