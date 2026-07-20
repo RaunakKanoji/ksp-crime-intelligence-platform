@@ -154,4 +154,4 @@ Current crime analysis workflows can be fragmented, manual, and dependent on spr
 - Keep raw upload handling separate from validation, cleaning, and import commits.
 
 ## 20. Status
-Initial status: Not Started.
+Status: Done (2026-07-20).
